@@ -48,6 +48,7 @@ RDD is a completely **static** website for locally downloading Roblox deployment
 
 ## Extras
 
+* [JSZip (Used to power `WindowsPlayer`/`WindowsStudio` file extraction/generation, give it's repo a star!)](https://github.com/Stuk/jszip)
 * [Latte Softworks Discord Community](https://latte.to/discord)
 * <https://github.com/latte-soft/channel-tracker>
 

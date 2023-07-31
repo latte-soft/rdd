@@ -185,6 +185,7 @@ function request(url, callback, method) {
     }
 
     const httpRequest = new XMLHttpRequest();
+    httpRequest.open(method, url, true);
 
     // When the request is done later..
     httpRequest.onload = function() {
@@ -202,12 +203,14 @@ function request(url, callback, method) {
         log(`[!] Request error (${statusCode}) @ ${url} - ${e.msg}`);
     };
 
-    httpRequest.open(method, url, true);
     httpRequest.send();
 };
 
 function requestBinary(url, callback) {
     const httpRequest = new XMLHttpRequest();
+
+    httpRequest.open("GET", url, true);
+    httpRequest.responseType = "arraybuffer";
 
     // When the request is done later..
     httpRequest.onload = function() {
@@ -231,17 +234,16 @@ function requestBinary(url, callback) {
         log(`error! (${e.msg})`);
     };
 
-    httpRequest.open("GET", url, true);
-    httpRequest.responseType = "arraybuffer";
     httpRequest.send();
 };
 
 // Soley for enumerating possible vals on S3
 function checkFileExists(url, callback, callbackValue) {
-    const request = new XMLHttpRequest();
+    const httpRequest = new XMLHttpRequest();
+    httpRequest.open("GET", url, true);
 
-    request.onload = function() {
-        if (request.status != 200) {
+    httpRequest.onload = function() {
+        if (httpRequest.status != 200) {
             return; // Ignore for the ret
         }
 
@@ -249,8 +251,7 @@ function checkFileExists(url, callback, callbackValue) {
         callback(callbackValue);
     };
     
-    request.open("GET", url, true);
-    request.send();
+    httpRequest.send();
 };
 
 // For file bindings

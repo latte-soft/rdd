@@ -461,6 +461,7 @@ async function getManifestCallback(manifestBody) {
         log(`[+] Exporting assembled zip file "${outputFileName}".. `, "");
 
         zip.generateAsync({type: "arraybuffer"}).then(function(outputZipData) {
+            log("done!");
             downloadBinaryFile(outputFileName, outputZipData);
         });
     };

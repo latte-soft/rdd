@@ -17,9 +17,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const usageMsg = `[*] USAGE: ${window.location.href.split("?")[0]}?channel=<CHANNEL_NAME>&version=<VERSION_GUID>&blobDir=<BLOB_DIR>
-    OR
-[*] USAGE: ${window.location.href.split("?")[0]}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>
+const basePath = window.location.href.split("?")[0];
+const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>
+    OR:
+[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&version=<VERSION_GUID>&blobDir=<BLOB_DIR>
 
     Binary Types:
     * WindowsPlayer
@@ -40,6 +41,18 @@ const usageMsg = `[*] USAGE: ${window.location.href.split("?")[0]}?channel=<CHAN
 `;
 
 const consoleText = document.getElementById("consoleText");
+const downloadForm = document.getElementById("downloadForm");
+
+// Called upon the "Copy Permanent Link" button
+function copyFormInfo() {
+    let channelName = downloadForm.channel.value.trim();
+    if (channelName == "") {
+        channelName = downloadForm.channel.placeholder
+    }
+
+    navigator.clipboard.writeText(`${basePath}?channel=${channelName}&binaryType=${downloadForm.binaryType.value}`);
+};
+
 const urlParams = new URLSearchParams(window.location.search);
 
 // Root extract locations for different known zips possible in the Win manifests
@@ -231,7 +244,7 @@ function requestBinary(url, callback) {
     };
 
     httpRequest.onerror = function(e) {
-        log(`error! (${e.msg})`);
+        log(`[!] Binary request error (${statusCode}) @ ${url} - ${e}`);
     };
 
     httpRequest.send();
@@ -247,7 +260,6 @@ function checkFileExists(url, callback, callbackValue) {
             return; // Ignore for the ret
         }
 
-        log(`done!`);
         callback(callbackValue);
     };
     
@@ -274,6 +286,7 @@ let zip;
 function main() {
     if (window.location.search == "") {
         // We won't log anything else; just exit
+        downloadForm.hidden = false;
         log(usageMsg);
         return;
     }
@@ -372,6 +385,8 @@ function fetchManifest() {
         checkFileExists(versionPath + "RobloxStudioVersion.txt", getFileNameCallback, "RobloxStudioApp.zip");
 
         function getFileNameCallback(zipFileName) {
+            log(`done!`);
+
             if (! binaryType) {
                 if (zipFileName == "RobloxPlayer.zip") {
                     binaryType = "MacPlayer";

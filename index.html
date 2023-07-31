@@ -33,6 +33,15 @@
                 background-color: rgb(45, 52, 54);
             }
 
+            form {
+                border: 1px solid rgb(149, 165, 166);
+                border-radius: 4px;
+                margin-left: 10px;
+                width: fit-content;
+                padding: 18px 18px 18px 18px;
+                line-height: 24px;
+            }
+
             a:link {
                 color: rgb(41, 128, 185);
             }
@@ -44,12 +53,30 @@
     </head>
 
     <body>
-        <p id="consoleText">RDD - "Roblox Deployment Downloader" <a target="_blank" href="https://github.com/latte-soft/rdd">https://github.com/latte-soft/rdd</a><br />Copyright (c) 2023 Latte Softworks <a target="_blank" href="https://latte.to">&lt;latte.to&gt;</a> | <a target="_blank" href="https://rdd.latte.to/LICENSE.txt">GPLv3</a></a><br /><br /></p>
+        <p>RDD - "Roblox Deployment Downloader" <a target="_blank" href="https://github.com/latte-soft/rdd">https://github.com/latte-soft/rdd</a><br />Copyright (c) 2023 Latte Softworks <a target="_blank" href="https://latte.to">&lt;latte.to&gt;</a> | <a target="_blank" href="https://rdd.latte.to/LICENSE.txt">GPLv3</a></a><br /></p>
 
         <p id="jsDisabled">&#40;This site doesn't work without JavaScript Enabled!&#41;</p>
         <script>
             document.getElementById("jsDisabled").remove();
         </script>
+
+        <form hidden id="downloadForm" target="_blank" action="">
+            <label for="binaryType">Binary Type:</label>
+            <select id="binaryType" name="binaryType">
+                <option value="WindowsPlayer">WindowsPlayer</option>
+                <option value="WindowsStudio64">WindowsStudio64</option>
+                <option value="MacPlayer">MacPlayer</option>
+                <option value="MacStudio">MacStudio</option>
+            </select>
+            <br />
+            <label for="channel">Channel Name:</label>
+            <input id="channel" name="channel" type="text" placeholder="LIVE" />
+            <br /><br />
+            <input type="submit" value="Download" />
+            <input type="button" onclick="copyFormInfo()" value="Copy Permanent Link" />
+        </form>
+
+        <p id="consoleText"></p>
     </body>
 
     <script src="scripts/jszip.min.js"></script>

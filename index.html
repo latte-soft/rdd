@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<!--
+    rdd - https://github.com/latte-soft/rdd
+
+    Copyright (C) 2023 Latte Softworks <latte.to>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
+<html>
+    <head>
+        <title>rdd</title>
+        <link rel="icon" href="favicon.svg">
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+
+            body {
+                color: rgb(223, 230, 233);
+                font-family: 'JetBrains Mono', monospace;
+                background-color: rgb(45, 52, 54);
+            }
+
+            a:link {
+                color: rgb(41, 128, 185);
+            }
+
+            a:visited {
+                color: rgb(41, 128, 185);
+            }
+        </style>
+    </head>
+
+    <body>
+        <p id="consoleText">rdd - "Roblox Deployment Downloader" <a href="https://github.com/latte-soft/rdd">https://github.com/latte-soft/rdd</a><br />Copyright (c) 2023 Latte Softworks <a href="https://latte.to">&lt;latte.to&gt;</a> | <a href="https://rdd.latte.to/LICENSE.txt">GPLv3</a></a><br /><br /></p>
+
+        <p id="jsDisabled">&#40;This site doesn't work without JavaScript Enabled!&#41;</p>
+        <script>
+            document.getElementById("jsDisabled").remove();
+        </script>
+    </body>
+
+    <script src="scripts/jszip.min.js"></script>
+    <script src="scripts/rdd.js"></script>
+</html>

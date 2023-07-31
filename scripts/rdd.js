@@ -480,11 +480,13 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
         if (! packageName.endsWith(".zip")) {
             // We can skip extraction logic and just add the file directly to the root
             zip.file(packageName, blobData);
+            log(`[+] Moved package "${packageName}" directly to the root folder`);
             doneCallback();
             return;
         } else if (packageName in extractRoots == false) {
             log(`[*] Package name "${packageName}" not defined in extraction roots for BinaryType \`${binaryType}\`, skipping extraction! (THIS MAY MAKE THE ZIP OUTPUT INCOMPLETE, BE AWARE!)`);
             zip.file(packageName, blobData);
+            log(`[+] Moved package "${packageName}" directly to the root folder`);
             doneCallback();
             return;
         }

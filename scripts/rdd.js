@@ -476,7 +476,7 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
     blobUrl = versionPath + packageName;
 
     requestBinary(blobUrl, async function(blobData) {
-        log(`[+] Package "${packageName}" recieved!`);
+        log(`[+] Package "${packageName}" received!`);
 
         if (! packageName.endsWith(".zip")) {
             // We can skip extraction logic and just add the file directly to the root

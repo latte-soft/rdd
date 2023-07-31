@@ -34,6 +34,18 @@ RDD is a completely **static** website for locally downloading Roblox deployment
 
 ```
 
+### Extra Usage Examples
+
+<sup><i>Please don't use the specific-version bins listed here, they're soley for demonstrating the different uses of RDD!</i></sup>
+
+* <https://rdd.latte.to?binaryType=WindowsPlayer>
+* <https://rdd.latte.to?channel=zintegration&binaryType=WindowsPlayer>
+* <https://rdd.latte.to?channel=zintegration&binaryType=WindowsStudio>
+* <https://rdd.latte.to?binaryType=MacPlayer>
+* <https://rdd.latte.to?binaryType=MacStudio>
+* <https://rdd.latte.to/?channel=zintegration&version=version-a2ffc572ecd64e2b>
+* <https://rdd.latte.to/?channel=zintegration&version=version-14b4aedf5b9f427d&blobDir=mac>
+
 ## Extras
 
 * [Latte Softworks Discord Community](https://latte.to/discord)

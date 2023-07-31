@@ -13,7 +13,7 @@ RDD is a completely **static** website for locally downloading Roblox deployment
 ```txt
 [*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&version=<VERSION_GUID>&blobDir=<BLOB_DIR>
     OR
-[*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&blobDir=<BLOB_DIR>
+[*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>
 
     Binary Types:
     * WindowsPlayer

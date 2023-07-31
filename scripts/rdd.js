@@ -19,7 +19,7 @@
 
 const usageMsg = `[*] USAGE: ${window.location.href.split("?")[0]}?channel=<CHANNEL_NAME>&version=<VERSION_GUID>&blobDir=<BLOB_DIR>
     OR
-[*] USAGE: ${window.location.href.split("?")[0]}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&blobDir=<BLOB_DIR>
+[*] USAGE: ${window.location.href.split("?")[0]}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>
 
     Binary Types:
     * WindowsPlayer

@@ -56,9 +56,7 @@
         <p>RDD - "Roblox Deployment Downloader" <a target="_blank" href="https://github.com/latte-soft/rdd">https://github.com/latte-soft/rdd</a><br />Copyright (c) 2023 Latte Softworks <a target="_blank" href="https://latte.to">&lt;latte.to&gt;</a> | <a target="_blank" href="https://rdd.latte.to/LICENSE.txt">GPLv3</a></a><br /></p>
 
         <p id="jsDisabled">&#40;This site doesn't work without JavaScript Enabled!&#41;</p>
-        <script>
-            document.getElementById("jsDisabled").remove();
-        </script>
+        <script>document.getElementById("jsDisabled").remove();</script>
 
         <form hidden id="downloadForm" target="_blank" action="">
             <label for="binaryType">Binary Type:</label>
@@ -72,8 +70,8 @@
             <label for="channel">Channel Name:</label>
             <input id="channel" name="channel" type="text" placeholder="LIVE" />
             <br /><br />
-            <input type="submit" value="Download" />
-            <input type="button" onclick="copyFormInfo()" value="Copy Permanent Link" />
+            <input type="button" onclick="downloadFromFormInfo();" value="Download" />
+            <input type="button" onclick="copyFormInfo();" value="Copy Permanent Link" />
         </form>
 
         <p id="consoleText"></p>

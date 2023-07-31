@@ -43,14 +43,23 @@ const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINA
 const consoleText = document.getElementById("consoleText");
 const downloadForm = document.getElementById("downloadForm");
 
-// Called upon the "Copy Permanent Link" button
-function copyFormInfo() {
+function getFormInfo() {
     let channelName = downloadForm.channel.value.trim();
     if (channelName == "") {
-        channelName = downloadForm.channel.placeholder
+        channelName = downloadForm.channel.placeholder;
     }
 
-    navigator.clipboard.writeText(`${basePath}?channel=${channelName}&binaryType=${downloadForm.binaryType.value}`);
+    return `${basePath}?channel=${channelName}&binaryType=${downloadForm.binaryType.value}`;
+};
+
+// Called upon the "Download" form button
+function downloadFromFormInfo() {
+    window.open(getFormInfo(), "_blank");
+};
+
+// Called upon the "Copy Permanent Link" form button
+function copyFormInfo() {
+    navigator.clipboard.writeText(getFormInfo());
 };
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -511,6 +520,7 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
         const extractRootFolder = extractRoots[packageName];
 
         await JSZip.loadAsync(blobData).then(async function(packageZip) {
+            blobData = null;
             fileGetPromises = [];
 
             packageZip.forEach(function(path, object) {
@@ -529,6 +539,7 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
             });
 
             await Promise.all(fileGetPromises);
+            packageZip = null;
         });
 
         log(`[+] Extracted "${packageName}"! (Packages left: ${getThreadsLeft()})`);

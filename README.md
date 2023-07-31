@@ -1,8 +1,34 @@
 # rdd
 
-"Roblox Deployment Downloader" - Static Site for Locally Downloading Roblox (Windows/Mac) Player + Studio Deployments from Your Browser
+"Roblox Deployment Downloader" - Static Site for Locally Downloading Roblox (Windows/Mac) Player + Studio Deployments Directly from Your Browser!
 <br />
 Hosted officially @ <https://rdd.latte.to>
+
+## Usage
+
+```txt
+[*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&version=<VERSION_GUID>&blobDir=<BLOB_DIR>
+    OR
+[*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&blobDir=<BLOB_DIR>
+
+    Binary Types:
+    * WindowsPlayer
+    * WindowsStudio64
+    * MacPlayer
+    * MacStudio
+    
+    Blob Directories (Examples):
+    * "/" (Usually for WindowsPlayer/WindowsStudio files)
+    * "/mac/"
+    * "/mac/arm64/"
+    
+    Extra Notes:
+    * If `channel` isn't provided, it will default to "LIVE" (psuedo identifier for production)
+    * If `blobDir` isn't provided, it will default to "/". This query is only used if a specific
+      `version` is set, and not if `binaryType` is. (Resolves itself) 
+    * EITHER `version` or `binaryType` need to be provided, but never both
+
+```
 
 ## Extras
 

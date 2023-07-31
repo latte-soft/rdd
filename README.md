@@ -6,7 +6,7 @@ Hosted officially @ <https://rdd.latte.to>
 
 ## "Detailed" Explanation
 
-RDD is a completely **static** website for locally downloading Roblox deployments; assembling plain resources directly from Roblox's S3 bucket, into a complete format the user would expect to be able to directly download and run a specified deployment. **Everything is fetched locally in your browser, without any required server resources!**
+RDD is a completely **static** website for locally downloading Roblox deployments; assembling plain resources directly from Roblox's S3 bucket, into a complete format the user would expect to be able to directly download and run directly, whatever it is. **Everything is fetched locally in your browser, without any required server resources!**
 
 ## Usage
 

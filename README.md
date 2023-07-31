@@ -1,6 +1,6 @@
 # RDD - "Roblox Deployment Downloader"
 
-Static Site for Locally Downloading Complete Roblox (Windows/Mac, Player + Studio) Deployments Directly from Your Browser!
+Static Site for Locally Downloading Complete Roblox Deployments (Windows/Mac, Player + Studio) Directly from Your Browser!
 <br />
 Hosted officially @ <https://rdd.latte.to>
 

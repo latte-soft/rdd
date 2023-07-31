@@ -6,7 +6,7 @@ Hosted officially @ <https://rdd.latte.to>
 
 ## "Detailed" Explanation
 
-RDD is a completely **static** website for locally downloading Roblox deployments, assembling plain resources directly from Roblox's S3 bucket, into a complete format the user would expect to be able to directly download and run a specified deployment. **Everything is fetched locally in your browser, without any required server resources!**
+RDD is a completely **static** website for locally downloading Roblox deployments; assembling plain resources directly from Roblox's S3 bucket, into a complete format the user would expect to be able to directly download and run a specified deployment. **Everything is fetched locally in your browser, without any required server resources!**
 
 ## Usage
 
@@ -34,11 +34,17 @@ RDD is a completely **static** website for locally downloading Roblox deployment
 
 ```
 
-### Extra Usage Examples
-
-<sup><i>Please don't use the specific-version bins listed here, they're soley for demonstrating the different uses of RDD!</i></sup>
+### Usage Example - Permanent links for the *latest* deployment on the production channel ("`LIVE`")
 
 * <https://rdd.latte.to/?binaryType=WindowsPlayer>
+* <https://rdd.latte.to/?binaryType=WindowsStudio64>
+* <https://rdd.latte.to/?binaryType=MacPlayer>
+* <https://rdd.latte.to/?binaryType=MacStudio>
+
+### Extra Usage Examples
+
+<sup><i>Please don't use the specific-version bins listed here, they're soley for demonstrating some different uses of RDD!</i></sup>
+
 * <https://rdd.latte.to/?channel=zintegration&binaryType=WindowsPlayer>
 * <https://rdd.latte.to/?channel=zintegration&binaryType=WindowsStudio>
 * <https://rdd.latte.to/?binaryType=MacPlayer>

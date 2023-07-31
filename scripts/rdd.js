@@ -368,13 +368,13 @@ function fetchManifest() {
     if (binaryType == "MacPlayer" || binaryType == "MacStudio" || blobDir.slice(0, 4) == "/mac") {
         log("[+] Checking for MacPlayer/MacStudio blobs.. ", "");
         checkFileExists(versionPath + "RobloxVersion.txt", getFileNameCallback, "RobloxPlayer.zip");
-        checkFileExists(versionPath + "RobloxStudioVersion.txt", getFileNameCallback, "RobloxStudio.zip");
+        checkFileExists(versionPath + "RobloxStudioVersion.txt", getFileNameCallback, "RobloxStudioApp.zip");
 
         function getFileNameCallback(zipFileName) {
             if (! binaryType) {
                 if (zipFileName == "RobloxPlayer.zip") {
                     binaryType = "MacPlayer";
-                } else if (zipFileName == "RobloxStudio.zip") {
+                } else if (zipFileName == "RobloxStudioApp.zip") {
                     binaryType = "MacStudio";
                 }
             }
@@ -461,6 +461,7 @@ async function getManifestCallback(manifestBody) {
         log(`[+] Exporting assembled zip file "${outputFileName}".. `, "");
 
         zip.generateAsync({type: "arraybuffer"}).then(function(outputZipData) {
+            zip = null;
             log("done!");
             downloadBinaryFile(outputFileName, outputZipData);
         });

@@ -228,35 +228,60 @@ function request(url, callback, method) {
     httpRequest.send();
 };
 
-function requestBinary(url, callback) {
-    const httpRequest = new XMLHttpRequest();
+async function getFileSize(url) {
+    const res = await fetch(url, { method: "HEAD" });
+    
+    return res.headers.get("Content-Length");
+}
 
-    httpRequest.open("GET", url, true);
-    httpRequest.responseType = "arraybuffer";
+const REQ_THREADS = 15;
+async function requestBinary(url, callback) {
+    try { // if you want to add individual error handling on every fetch and .arrayBuffer go ahead i just cba - chris
+        const size = parseInt(await getFileSize(url));
+        if (!size) {
+            fetch(url)
+                .then(async res => callback(Array.from(await res.arrayBuffer())))
 
-    // When the request is done later..
-    httpRequest.onload = function() {
-        // Handle req issues, and don't call-back
-        const statusCode = httpRequest.status
-        if (statusCode != 200) {
-            log(`[!] Binary request error (${statusCode}) @ ${url}`);
-            return;
+            return
         }
+    
+        const out = [];
+        out.fill([], 0, REQ_THREADS - 1);
+    
+        const chunkSize = Math.floor( size / REQ_THREADS );
 
-        const arrayBuffer = httpRequest.response;
-        if (! arrayBuffer) {
-            log(`[!] Binary request error (${statusCode}) @ ${url} - Failed to get binary ArrayBuffer from response`);
-            return;
+        let finishedChunks = 0;
+        for (let i = 0; i < REQ_THREADS; i++) {
+            const start = i * chunkSize
+            const end = i == REQ_THREADS - 1 
+                ? size
+                : (i + 1) * chunkSize - 1   
+    
+            fetch(url, { headers: { range: `bytes=${start}-${end}` } })
+                .then(async res => {
+                    out[i] = new Uint8Array(await res.arrayBuffer());
+                    finishedChunks++;
+
+                    if (i == REQ_THREADS - 1) {
+                        const retryInterval = setInterval(() => {
+                            if (finishedChunks == REQ_THREADS) {
+                                let binary = new Uint8Array(size); 
+                                let ptr = 0;
+
+                                for (let chunk of out) {
+                                    binary.set(chunk, ptr);
+                                    ptr += chunk.length;
+                                }
+                                callback(binary);
+                                clearInterval(retryInterval);
+                            }
+                        }, 50);
+                    }
+                })
         }
-
-        callback(arrayBuffer, statusCode);
-    };
-
-    httpRequest.onerror = function(e) {
-        log(`[!] Binary request error (${statusCode}) @ ${url} - ${e}`);
-    };
-
-    httpRequest.send();
+    } catch(e) {
+        log(`[!] Binary request error (${e} @ ${url}`);
+    }
 };
 
 // Soley for enumerating possible vals on S3

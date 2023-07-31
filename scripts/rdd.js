@@ -425,8 +425,8 @@ async function getManifestCallback(manifestBody) {
     // For both WindowsPlayer and WindowsStudio
     zip.file("AppSettings.xml", `<?xml version="1.0" encoding="UTF-8"?>
 <Settings>
-    <ContentFolder>content</ContentFolder>
-    <BaseUrl>http://www.roblox.com</BaseUrl>
+	<ContentFolder>content</ContentFolder>
+	<BaseUrl>http://www.roblox.com</BaseUrl>
 </Settings>
 `);
 
@@ -437,7 +437,7 @@ async function getManifestCallback(manifestBody) {
     };
 
     function getThreadsLeft() {
-        return threadsLeft;
+        return threadsLeft - 1;
     };
 
     for (const index in pkgManifestLines) {
@@ -491,7 +491,9 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
         log(`[+] Extracting "${packageName}"..`);
         const extractRootFolder = extractRoots[packageName];
 
-        await JSZip.loadAsync(blobData).then(function(packageZip) {
+        await JSZip.loadAsync(blobData).then(async function(packageZip) {
+            fileGetPromises = [];
+
             packageZip.forEach(function(path, object) {
                 if (path.endsWith("\\")) {
                     // If it's a directory, skip
@@ -499,10 +501,15 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
                 }
 
                 const fixedPath = path.replace(/\\/g, "/");
-                object.async("arraybuffer").then(function(data) {
+
+                fileGetPromise = object.async("arraybuffer").then(function(data) {
                     zip.file(extractRootFolder + fixedPath, data);
                 });
+
+                fileGetPromises.push(fileGetPromise)
             });
+
+            await Promise.all(fileGetPromises);
         });
 
         log(`[+] Extracted "${packageName}"! (Packages left: ${getThreadsLeft()})`);

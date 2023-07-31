@@ -228,23 +228,16 @@ function request(url, callback, method) {
     httpRequest.send();
 };
 
-async function getFileSize(url) {
-    const res = await fetch(url, { method: "HEAD" });
-    
-    return res.headers.get("Content-Length");
-}
-
 const REQ_THREADS = 15;
-async function requestBinary(url, callback) {
+async function requestBinary(url, size, callback) {
     try { // if you want to add individual error handling on every fetch and .arrayBuffer go ahead i just cba - chris
-        const size = parseInt(await getFileSize(url));
-        if (!size) {
+        if (size == -1) {
             fetch(url)
                 .then(async res => callback(Array.from(await res.arrayBuffer())))
 
             return
         }
-    
+
         const out = [];
         out.fill([], 0, REQ_THREADS - 1);
     
@@ -432,7 +425,7 @@ function fetchManifest() {
             const outputFileName = `${channel}-${binaryType}-${version}.zip`;
             log(`[+] (Please wait!) Downloading ${outputFileName}..`, "");
 
-            requestBinary(versionPath + zipFileName, function(zipData) {
+            requestBinary(versionPath + zipFileName, -1, function(zipData) {
                 log("done!");
                 downloadBinaryFile(outputFileName, zipData);
             });
@@ -490,6 +483,8 @@ async function getManifestCallback(manifestBody) {
         return threadsLeft - 1;
     };
 
+    console.log(pkgManifestLines)
+
     for (const index in pkgManifestLines) {
         pkgManifestLine = pkgManifestLines[index];
         if (! pkgManifestLine.includes(".")) {
@@ -497,7 +492,12 @@ async function getManifestCallback(manifestBody) {
         }
 
         threadsLeft += 1;
-        downloadPackage(pkgManifestLine, doneCallback, getThreadsLeft);
+        downloadPackage(
+            pkgManifestLine, 
+            parseInt(pkgManifestLines[parseInt(index) + 2]), 
+            doneCallback,
+            getThreadsLeft
+        );
     }
 
     function checkIfNoThreadsLeft() {
@@ -520,11 +520,11 @@ async function getManifestCallback(manifestBody) {
     checkIfNoThreadsLeft();
 };
 
-async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
+async function downloadPackage(packageName, packageSize, doneCallback, getThreadsLeft) {
     log(`[+] Fetching "${packageName}"..`,);
     blobUrl = versionPath + packageName;
 
-    requestBinary(blobUrl, async function(blobData) {
+    requestBinary(blobUrl, packageSize, async function(blobData) {
         log(`[+] Package "${packageName}" received!`);
 
         if (! packageName.endsWith(".zip")) {

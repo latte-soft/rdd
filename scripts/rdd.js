@@ -201,19 +201,19 @@ function downloadBinaryFile(fileName, data) {
 };
 
 // Soley for the manifest etc
-function request(url, callback, method) {
-    if (method == null) {
-        method = "GET"
+function request(url, callback, errorOnNotOk) {
+    if (errorOnNotOk == null) {
+        errorOnNotOk = true;
     }
 
     const httpRequest = new XMLHttpRequest();
-    httpRequest.open(method, url, true);
+    httpRequest.open("GET", url, true);
 
     // When the request is done later..
     httpRequest.onload = function() {
         // Handle req issues, and don't call-back
         const statusCode = httpRequest.status
-        if (statusCode < 200 || statusCode >= 400) {
+        if (errorOnNotOk && (statusCode < 200 || statusCode >= 400)) {
             log(`[!] Request error (${statusCode}) @ ${url} - ${httpRequest.responseText}`);
             return;
         }
@@ -256,22 +256,6 @@ function requestBinary(url, callback) {
         log(`[!] Binary request error (${statusCode}) @ ${url} - ${e}`);
     };
 
-    httpRequest.send();
-};
-
-// Soley for enumerating possible vals on S3
-function checkFileExists(url, callback, callbackValue) {
-    const httpRequest = new XMLHttpRequest();
-    httpRequest.open("GET", url, true);
-
-    httpRequest.onload = function() {
-        if (httpRequest.status != 200) {
-            return; // Ignore for the ret
-        }
-
-        callback(callbackValue);
-    };
-    
     httpRequest.send();
 };
 
@@ -390,24 +374,36 @@ function fetchManifest() {
     // If it's a Mac bin we need to deal with..
     if (binaryType == "MacPlayer" || binaryType == "MacStudio" || blobDir.slice(0, 4) == "/mac") {
         log("[+] Checking for MacPlayer/MacStudio blobs.. ", "");
-        checkFileExists(versionPath + "RobloxVersion.txt", getFileNameCallback, "RobloxPlayer.zip");
-        checkFileExists(versionPath + "RobloxStudioVersion.txt", getFileNameCallback, "RobloxStudioApp.zip");
 
-        function getFileNameCallback(zipFileName) {
-            log(`done!`);
-
-            if (! binaryType) {
-                if (zipFileName == "RobloxPlayer.zip") {
-                    binaryType = "MacPlayer";
-                } else if (zipFileName == "RobloxStudioApp.zip") {
-                    binaryType = "MacStudio";
-                }
+        // First, check for MacPlayer
+        request(versionPath + "RobloxVersion.txt", function(_, robloxVersionStatusCode) {
+            if (robloxVersionStatusCode == 200) {
+                binaryType = "MacPlayer";
+                downloadMacZip(versionPath + "RobloxPlayer.zip");
+                return;
             }
+
+            // If that wasn't the case, now check for MacStudio
+            request(versionPath + "RobloxStudioVersion.txt", function(_, robloxStudioVersionStatusCode) {
+                if (robloxStudioVersionStatusCode == 200) {
+                    binaryType = "MacStudio";
+                    downloadMacZip(versionPath + "RobloxStudioApp.zip");
+                    return;
+                }
+
+                // Then we couldn't find a match! :(
+                log(`[!] Error: Couldn't find a match to MacPlayer OR MacStudio for "${version}", aborting..`);
+                return;
+            }, false);
+        }, false); // Don't throw err on bad request
+
+        function downloadMacZip(path) {
+            log(`done!`);
 
             const outputFileName = `${channel}-${binaryType}-${version}.zip`;
             log(`[+] (Please wait!) Downloading ${outputFileName}..`, "");
 
-            requestBinary(versionPath + zipFileName, function(zipData) {
+            requestBinary(path, function(zipData) {
                 log("done!");
                 downloadBinaryFile(outputFileName, zipData);
             });

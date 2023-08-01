@@ -13,7 +13,7 @@ RDD is a completely **static** website for locally downloading Roblox deployment
 ```txt
 [*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>
     OR:
-[*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&version=<VERSION_GUID>&blobDir=<BLOB_DIR>
+[*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&version=<VERSION_HASH>
 
     Binary Types:
     * WindowsPlayer
@@ -21,17 +21,23 @@ RDD is a completely **static** website for locally downloading Roblox deployment
     * MacPlayer
     * MacStudio
     
-    Blob Directories (Examples):
-    * "/" (Usually for WindowsPlayer/WindowsStudio files)
-    * "/mac/"
-    * "/mac/arm64/"
-    
     Extra Notes:
-    * If `channel` isn't provided, it will default to "LIVE" (psuedo identifier for production)
-    * If `blobDir` isn't provided, it will default to "/". This query is only used if a specific
-      `version` is set, and not if `binaryType` is. (Resolves itself) 
-    * EITHER `version` or `binaryType` need to be provided, but never both
+    * If `channel` isn't provided, it will default to "LIVE" (psuedo identifier for
+      the production channel)
+    * You can provide `binaryType` to fetch the *latest* deployment on a channel, or
+      BOTH `binaryType` and `version` to fetch a specific deployment of a specific
+      binary type; for a specific `version`, you NEED to provide `binaryType` aswell
 
+    You can also use an extra flag we provide, `blobDir`, for specifying where RDD
+    should fetch deployment files/binaries from. This is ONLY useful for using
+    different relative paths than normal, such as "/mac/arm64" which is specifically
+    present on certain channels
+
+    Blob Directories (Examples):
+    * "/" (Default for WindowsPlayer/WindowsStudio)
+    * "/mac/" (Default for MacPlayer/MacStudio)
+    * "/mac/arm64/"
+    ..
 ```
 
 ### Usage Example - Permanent links for the *latest* deployment on the production channel ("`LIVE`")
@@ -45,12 +51,11 @@ RDD is a completely **static** website for locally downloading Roblox deployment
 
 <sup><i>Please don't use the specific-version bins listed here, they're soley for demonstrating some different uses of RDD!</i></sup>
 
+* <https://rdd.latte.to/?binaryType=WindowsPlayer&version=version-b9021bd8128442aa>
 * <https://rdd.latte.to/?channel=zintegration&binaryType=WindowsPlayer>
 * <https://rdd.latte.to/?channel=zintegration&binaryType=WindowsStudio64>
-* <https://rdd.latte.to/?binaryType=MacPlayer>
-* <https://rdd.latte.to/?binaryType=MacStudio>
-* <https://rdd.latte.to/?channel=zintegration&version=version-a2ffc572ecd64e2b>
-* <https://rdd.latte.to/?channel=zintegration&version=version-14b4aedf5b9f427d&blobDir=mac>
+* <https://rdd.latte.to/?channel=zintegration&binaryType=WindowsPlayer&version=version-a2ffc572ecd64e2b>
+* <https://rdd.latte.to/?channel=zintegration&binaryType=MacPlayer&version=version-14b4aedf5b9f427d>
 
 ## Extras
 

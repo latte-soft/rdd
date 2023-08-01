@@ -20,7 +20,7 @@
 const basePath = window.location.href.split("?")[0];
 const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>
     OR:
-[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&version=<VERSION_GUID>&blobDir=<BLOB_DIR>
+[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&version=<VERSION_HASH>
 
     Binary Types:
     * WindowsPlayer
@@ -28,41 +28,24 @@ const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINA
     * MacPlayer
     * MacStudio
     
-    Blob Directories (Examples):
-    * "/" (Usually for WindowsPlayer/WindowsStudio files)
-    * "/mac/"
-    * "/mac/arm64/"
-    
     Extra Notes:
-    * If \`channel\` isn't provided, it will default to "LIVE" (psuedo identifier for production)
-    * If \`blobDir\` isn't provided, it will default to "/". This query is only used if a specific
-      \`version\` is set, and not if \`binaryType\` is. (Resolves itself) 
-    * EITHER \`version\` or \`binaryType\` need to be provided, but never both
+    * If \`channel\` isn't provided, it will default to "LIVE" (psuedo identifier for
+      the production channel)
+    * You can provide \`binaryType\` to fetch the *latest* deployment on a channel, or
+      BOTH \`binaryType\` and \`version\` to fetch a specific deployment of a specific
+      binary type; for a specific \`version\`, you NEED to provide \`binaryType\` aswell
+
+    You can also use an extra flag we provide, \`blobDir\`, for specifying where RDD
+    should fetch deployment files/binaries from. This is ONLY useful for using
+    different relative paths than normal, such as "/mac/arm64" which is specifically
+    present on certain channels
+
+    Blob Directories (Examples):
+    * "/" (Default for WindowsPlayer/WindowsStudio)
+    * "/mac/" (Default for MacPlayer/MacStudio)
+    * "/mac/arm64/"
+    ..
 `;
-
-const consoleText = document.getElementById("consoleText");
-const downloadForm = document.getElementById("downloadForm");
-
-function getFormInfo() {
-    let channelName = downloadForm.channel.value.trim();
-    if (channelName == "") {
-        channelName = downloadForm.channel.placeholder;
-    }
-
-    return `${basePath}?channel=${channelName}&binaryType=${downloadForm.binaryType.value}`;
-};
-
-// Called upon the "Download" form button
-function downloadFromFormInfo() {
-    window.open(getFormInfo(), "_blank");
-};
-
-// Called upon the "Copy Permanent Link" form button
-function copyFormInfo() {
-    navigator.clipboard.writeText(getFormInfo());
-};
-
-const urlParams = new URLSearchParams(window.location.search);
 
 // Root extract locations for different known zips possible in the Win manifests
 const extractRootsDict = {
@@ -138,18 +121,50 @@ const extractRootsDict = {
 // Yes, these files on S3 are meant for "legacy bootstrappers", but they work great
 // for purposes like this, and tracking. We also *can't* use clientsettings, due to
 // CORS policies of course..
-const binaryTypeFileBindings = {
-    WindowsPlayer: "/version",
-    WindowsStudio64: "/versionQTStudio",
-    MacPlayer: "/mac/version",
-    MacStudio: "/mac/versionStudio"
+const binaryTypes = {
+    WindowsPlayer: {
+        versionFile: "/version",
+        blobDir: "/"
+    },
+    WindowsStudio64: {
+        versionFile: "/versionQTStudio",
+        blobDir: "/"
+    },
+    MacPlayer: {
+        versionFile: "/mac/version",
+        blobDir: "/mac"
+    },
+    MacStudio: {
+        versionFile: "/mac/versionStudio",
+        blobDir: "/mac"
+    },
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+
+const consoleText = document.getElementById("consoleText");
+const downloadForm = document.getElementById("downloadForm");
+
+function getFormInfo() {
+    const channelName = downloadForm.channel.value.trim() || downloadForm.channel.placeholder;
+    let queryString = `?channel=${encodeURIComponent(channelName)}&binaryType=${encodeURIComponent(downloadForm.binaryType.value)}`;
+
+    const versionHash = downloadForm.version.value.trim();
+    if (versionHash != "") {
+        queryString += `&version=${encodeURIComponent(versionHash)}`;
+    }
+
+    return basePath + queryString;
 };
 
-const binaryTypeBlobDirs = {
-    WindowsPlayer: "/",
-    WindowsStudio64: "/",
-    MacPlayer: "/mac/",
-    MacStudio: "/mac/"
+// Called upon the "Download" form button
+function downloadFromFormInfo() {
+    window.open(getFormInfo(), "_blank");
+};
+
+// Called upon the "Copy Permanent Link" form button
+function copyFormInfo() {
+    navigator.clipboard.writeText(getFormInfo());
 };
 
 function scrollToBottom() {
@@ -159,36 +174,23 @@ function scrollToBottom() {
     });
 };
 
-function escHtml(originalText) {
-    return originalText
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;")
-        .replace(/ /g, "&nbsp;")
-        .replace(/\n/g, "<br />");
-};
-
-function log(msg, end) {
-    if (end == null) {
-        end = "\n";
+function log(msg, end = "\n", autoScroll = true) {
+    consoleText.append(msg + end);
+    if (autoScroll) {
+        scrollToBottom();
     }
-
-    consoleText.innerHTML += escHtml(msg + end);
-    scrollToBottom();
 };
 
 // Prompt download
 function downloadBinaryFile(fileName, data) {
-    const blob = new Blob([data], {type: "application/octet-stream"});
+    const blob = new Blob([data], {type: "application/zip"});
 
     let link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = fileName;
 
     let button = document.createElement("button");
-    button.innerHTML = `Redownload ${escHtml(fileName)}`;
+    button.innerText = `Redownload ${fileName}`;
 
     button.onclick = function() {
         link.click();
@@ -201,11 +203,7 @@ function downloadBinaryFile(fileName, data) {
 };
 
 // Soley for the manifest etc
-function request(url, callback, errorOnNotOk) {
-    if (errorOnNotOk == null) {
-        errorOnNotOk = true;
-    }
-
+function request(url, callback, errorOnNotOk = true) {
     const httpRequest = new XMLHttpRequest();
     httpRequest.open("GET", url, true);
 
@@ -222,7 +220,7 @@ function request(url, callback, errorOnNotOk) {
     };
 
     httpRequest.onerror = function(e) {
-        log(`[!] Request error (${statusCode}) @ ${url} - ${e.msg}`);
+        log(`[!] Request error @ ${url} - ${e}`);
     };
 
     httpRequest.send();
@@ -253,22 +251,25 @@ function requestBinary(url, callback) {
     };
 
     httpRequest.onerror = function(e) {
-        log(`[!] Binary request error (${statusCode}) @ ${url} - ${e}`);
+        log(`[!] Binary request error @ ${url} - ${e}`);
     };
 
     httpRequest.send();
 };
 
-// For file bindings
-function fileNameWithoutExt(fileName) {
-    return fileName.replace(/\.[^.]+$/, '');
+function getQuery(queryString) {
+    if (! urlParams.has(queryString)) {
+        return null;
+    }
+
+    return urlParams.get(queryString) || null;
 };
 
-let channel;
-let version;
-let binaryType;
-let blobDir;
-let hostPath;
+let hostPath = getQuery("_hostPath");
+let channel = getQuery("channel");
+let version = getQuery("version");
+let binaryType = getQuery("binaryType");
+let blobDir = getQuery("blobDir");
 
 let channelPath;
 let versionPath;
@@ -276,18 +277,19 @@ let versionPath;
 let extractRoots;
 let zip;
 
+// Init
+main();
+
 function main() {
     if (window.location.search == "") {
         // We won't log anything else; just exit
         downloadForm.hidden = false;
-        log(usageMsg);
+        log(usageMsg, "\n", false);
         return;
     }
 
     // "Internal"
-    if (urlParams.has("_hostPath") && urlParams.get("_hostPath") != "") {
-        hostPath = urlParams.get("_hostPath");
-
+    if (hostPath) {
         // If there's a "/" at the end, remove it
         if (hostPath.slice(-1) == "/") {
             hostPath = hostPath.slice(0, -1);
@@ -297,8 +299,7 @@ function main() {
     }
 
     // Optional
-    if (urlParams.has("channel") && urlParams.get("channel") != "") {
-        channel = urlParams.get("channel");
+    if (channel) {
         if (channel != "LIVE") {
             channel = channel.toLowerCase();
         }
@@ -312,48 +313,60 @@ function main() {
         channelPath = `${hostPath}/channel/${channel}`;
     }
 
-    // This is overriden later if binaryType was explicitly set, as it would be able to
-    // resolve this itself, regardless
-    if (urlParams.has("blobDir") && urlParams.get("blobDir") != "") {
-        blobDir = urlParams.get("blobDir");
+    // We're also checking to make sure blobDir hasn't been included too for the compatibility warning later
+    if (version && ! binaryType && ! blobDir) {
+        log("[!] Error: If you provide a specific `version`, you need to set the `binaryType` aswell! See the usage doc below for examples of various `binaryType` inputs:", "\n\n",);
+        log(usageMsg, "\n", false);
+        return;
+    }
+
+    if (blobDir) {
         if (blobDir.slice(-1) != "/") {
             blobDir += "/"
         }
         if (blobDir.slice(0) != "/") {
             blobDir = "/" + blobDir;
         }
-    } else {
-        blobDir = "/";
+
+        // We used to support usage of ONLY `blobDir` & `version` in the past, requiring us
+        // to essentially "guess" the desired binaryType ourselves! (how fun, right!?)
+        if (! binaryType) {
+            log(`[!] Error: Using the \`blobDir\` query without defining \`binaryType\` has been
+    deprecated, and can no longer be used in requests. If you were using \`blobDir\`
+    explicitly for MacPlayer/MacStudio with "blobDir=mac" or "/mac", please replace
+    blobDir with a \`binaryType\` of either MacPlayer or MacStudio respectively`, "\n\n");
+
+            log(usageMsg, "\n", false);
+            return;
+        }
     }
 
-    // *Required
-    if (urlParams.has("version") && urlParams.get("version") != "") {
-        // Can't have both
-        if (urlParams.has("binaryType") && urlParams.get("binaryType") != "") {
-            log("[!] Error: You cannot have both `version`, AND `channel` set; look at your query path again!");
-            log(usageMsg);
-            return;
-        }
+    // At this point, we expect `binaryType` to be defined if all is well on input from the user..
+    if (! binaryType) {
+        log("[!] Error: Missing required `binaryType` query, maybe check your URL again?", "\n\n");
+        log(usageMsg, "\n", false);
+        return;
+    }
 
-        version = urlParams.get("version");
+    let versionFilePath; // Only used if `version` isn't already defined (later, see code below the if-else after this)
+    if (binaryType in binaryTypes) {
+        const binaryTypeObject = binaryTypes[binaryType];
+        versionFilePath = channelPath + binaryTypeObject.versionFile;
+
+        // If `blobDir` has already been defined by the user, we don't want to override it here..
+        if (! blobDir) {
+            blobDir = binaryTypeObject.blobDir;
+        }
+    } else {
+        log(`[!] Error: \`binaryType\` given, "${binaryType}" not supported. See list below for supported \`binaryType\` inputs:`, "\n\n");
+        log(usageMsg);
+        return;
+    }
+
+    if (version) {
+        // We're already good to go
         fetchManifest();
-    } else if (urlParams.has("binaryType") && urlParams.get("binaryType") != "") {
-        binaryType = urlParams.get("binaryType");
-
-        let versionFilePath;
-        if (binaryType in binaryTypeFileBindings) {
-            const binaryTypeFileBinding = binaryTypeFileBindings[binaryType];
-
-            versionFilePath = channelPath + binaryTypeFileBinding;
-
-            // We'll also now override this for later; if it's in these file bindings, it's supposed to be in here too
-            blobDir = binaryTypeBlobDirs[binaryType];
-        } else {
-            log(`[!] Error: \`binaryType\` given, "${binaryType}" not supported. See list below for supported BinaryTypes`);
-            log(usageMsg);
-            return;
-        }
-
+    } else {
         log(`[+] Fetching version for ${binaryType}@${channel}.. `, "");
         
         request(versionFilePath, function(versionBody) {
@@ -361,41 +374,20 @@ function main() {
             version = versionBody;
             fetchManifest();
         });
-    } else {
-        log("[!] Error: Missing `version` or `binaryType` queries (ONE is requred)");
-        log(usageMsg);
-        return;
     }
 };
 
 function fetchManifest() {
     versionPath = `${channelPath}${blobDir}${version}-`;
 
+    if (binaryType == "MacPlayer" || binaryType == "MacStudio") {
+        const zipFileName = (binaryType == "MacPlayer" && "RobloxPlayer.zip") || (binaryType == "MacStudio" && "RobloxStudioApp.zip")
+        log("[+] ");
+    }
+
     // If it's a Mac bin we need to deal with..
     if (binaryType == "MacPlayer" || binaryType == "MacStudio" || blobDir.slice(0, 4) == "/mac") {
         log("[+] Checking for MacPlayer/MacStudio blobs.. ", "");
-
-        // First, check for MacPlayer
-        request(versionPath + "RobloxVersion.txt", function(_, robloxVersionStatusCode) {
-            if (robloxVersionStatusCode == 200) {
-                binaryType = "MacPlayer";
-                downloadMacZip(versionPath + "RobloxPlayer.zip");
-                return;
-            }
-
-            // If that wasn't the case, now check for MacStudio
-            request(versionPath + "RobloxStudioVersion.txt", function(_, robloxStudioVersionStatusCode) {
-                if (robloxStudioVersionStatusCode == 200) {
-                    binaryType = "MacStudio";
-                    downloadMacZip(versionPath + "RobloxStudioApp.zip");
-                    return;
-                }
-
-                // Then we couldn't find a match! :(
-                log(`[!] Error: Couldn't find a match to MacPlayer OR MacStudio for "${version}", aborting..`);
-                return;
-            }, false);
-        }, false); // Don't throw err on bad request
 
         function downloadMacZip(path) {
             log(`done!`);
@@ -420,7 +412,7 @@ function fetchManifest() {
 
 async function getManifestCallback(manifestBody) {
     log("done!");
-    pkgManifestLines = manifestBody.split("\n").map(line => line.trim());
+    const pkgManifestLines = manifestBody.split("\n").map(line => line.trim());
 
     if (pkgManifestLines[0] != "v0") {
         log(`[!] Error: rbxPkgManifest manifest version incorrect; expected "v0", got "${pkgManifestLines[0]}"`);
@@ -462,7 +454,7 @@ async function getManifestCallback(manifestBody) {
     };
 
     for (const index in pkgManifestLines) {
-        pkgManifestLine = pkgManifestLines[index];
+        const pkgManifestLine = pkgManifestLines[index];
         if (! pkgManifestLine.includes(".")) {
             continue; // Not a file in the manifest! (yes, this is quite a lazy way to check it lol)
         }
@@ -493,7 +485,7 @@ async function getManifestCallback(manifestBody) {
 
 async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
     log(`[+] Fetching "${packageName}"..`,);
-    blobUrl = versionPath + packageName;
+    const blobUrl = versionPath + packageName;
 
     requestBinary(blobUrl, async function(blobData) {
         log(`[+] Package "${packageName}" received!`);
@@ -517,7 +509,7 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
 
         await JSZip.loadAsync(blobData).then(async function(packageZip) {
             blobData = null;
-            fileGetPromises = [];
+            let fileGetPromises = [];
 
             packageZip.forEach(function(path, object) {
                 if (path.endsWith("\\")) {
@@ -526,8 +518,7 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
                 }
 
                 const fixedPath = path.replace(/\\/g, "/");
-
-                fileGetPromise = object.async("arraybuffer").then(function(data) {
+                const fileGetPromise = object.async("arraybuffer").then(function(data) {
                     zip.file(extractRootFolder + fixedPath, data);
                 });
 
@@ -542,6 +533,3 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
         doneCallback();
     });
 };
-
-// Init
-main();

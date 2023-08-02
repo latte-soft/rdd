@@ -411,7 +411,7 @@ async function getManifestCallback(manifestBody) {
 
     if (binaryType == "WindowsPlayer") {
         extractRoots = extractRootsDict.player;
-    } else if (binaryType == "WindowsStudio") {
+    } else if (binaryType == "WindowsStudio64") {
         extractRoots = extractRootsDict.studio;
     } else {
         log("[!] Error: Bad/unrecognized rbxPkgManifest, aborting..");

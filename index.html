@@ -49,16 +49,16 @@
                 white-space: pre-wrap;
             }
 
+            button {
+                font-weight: normal;
+            }
+
             a:link {
                 color: rgb(41, 128, 185);
             }
 
             a:visited {
                 color: rgb(41, 128, 185);
-            }
-
-            input[type="button"] {
-                font-weight: normal;
             }
         </style>
     </head>
@@ -83,14 +83,15 @@
                 <label for="version">Version Hash:</label>
                 <input id="version" name="version" type="text"></input> <b>&#40;~ Not Required&#41;</b>
                 <br /><br />
-                <input type="button" onclick="downloadFromFormInfo();" value="Download" />
-                <input type="button" onclick="copyFormInfo();" value="Copy Permanent Link" />
+                <button onclick="downloadFromFormInfo();">Download</button>
+                <button onclick="copyFormInfo();">Copy Permanent Link</button>
                 <br />
             </form>
             <br />
         </div>
 
         <output id="consoleText"></output>
+        <br />
     </body>
 
     <script src="scripts/jszip.min.js"></script>

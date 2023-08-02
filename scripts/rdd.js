@@ -41,7 +41,7 @@ const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINA
     present on certain channels
 
     Blob Directories (Examples):
-    * "/" (Default for WindowsPlayer/WindowsStudio)
+    * "/" (Default for WindowsPlayer/WindowsStudio64)
     * "/mac/" (Default for MacPlayer/MacStudio)
     * "/mac/arm64/"
     ..
@@ -144,6 +144,7 @@ const urlParams = new URLSearchParams(window.location.search);
 
 const consoleText = document.getElementById("consoleText");
 const downloadForm = document.getElementById("downloadForm");
+const downloadFormDiv = document.getElementById("downloadFormDiv");
 
 function getFormInfo() {
     const channelName = downloadForm.channel.value.trim() || downloadForm.channel.placeholder;
@@ -283,7 +284,7 @@ main();
 function main() {
     if (window.location.search == "") {
         // We won't log anything else; just exit
-        downloadForm.hidden = false;
+        downloadFormDiv.hidden = false;
         log(usageMsg, "\n", false);
         return;
     }
@@ -343,7 +344,8 @@ function main() {
 
     // At this point, we expect `binaryType` to be defined if all is well on input from the user..
     if (! binaryType) {
-        log("[!] Error: Missing required `binaryType` query, maybe check your URL again?", "\n\n");
+        // Again, we used to support specific-versions without denoting binaryType explicitly
+        log("[!] Error: Missing required \`binaryType\` query, are you using an old perm link for a specific version?", "\n\n");
         log(usageMsg, "\n", false);
         return;
     }
@@ -382,32 +384,20 @@ function fetchManifest() {
 
     if (binaryType == "MacPlayer" || binaryType == "MacStudio") {
         const zipFileName = (binaryType == "MacPlayer" && "RobloxPlayer.zip") || (binaryType == "MacStudio" && "RobloxStudioApp.zip")
-        log("[+] ");
+        log(`[+] Fetching zip archive for BinaryType "${binaryType}" (${zipFileName})`);
+
+        const outputFileName = `${channel}-${binaryType}-${version}.zip`;
+        log(`[+] (Please wait!) Downloading ${outputFileName}..`, "");
+
+        requestBinary(versionPath + outputFileName, function(zipData) {
+            log("done!");
+            downloadBinaryFile(outputFileName, zipData);
+        });
+    } else {
+        // Now, we're only dealing with Windows bin logic
+        log(`[+] Fetching rbxPkgManifest for ${version}@${channel}.. `, "");
+        request(versionPath + "rbxPkgManifest.txt", getManifestCallback);
     }
-
-    // If it's a Mac bin we need to deal with..
-    if (binaryType == "MacPlayer" || binaryType == "MacStudio" || blobDir.slice(0, 4) == "/mac") {
-        log("[+] Checking for MacPlayer/MacStudio blobs.. ", "");
-
-        function downloadMacZip(path) {
-            log(`done!`);
-
-            const outputFileName = `${channel}-${binaryType}-${version}.zip`;
-            log(`[+] (Please wait!) Downloading ${outputFileName}..`, "");
-
-            requestBinary(path, function(zipData) {
-                log("done!");
-                downloadBinaryFile(outputFileName, zipData);
-            });
-        };
-
-        return;
-    }
-
-    // Now, we're dealing with soley Windows bin logic
-
-    log(`[+] Fetching rbxPkgManifest for ${version}@${channel}.. `, "");
-    request(versionPath + "rbxPkgManifest.txt", getManifestCallback);
 };
 
 async function getManifestCallback(manifestBody) {
@@ -419,13 +409,10 @@ async function getManifestCallback(manifestBody) {
         return
     }
 
-    // We need to decide with "extraction roots" we're allocating
-    if (pkgManifestLines.includes("RobloxApp.zip")) {
+    if (binaryType == "WindowsPlayer") {
         extractRoots = extractRootsDict.player;
-        binaryType = "WindowsPlayer";
-    } else if (pkgManifestLines.includes("RobloxStudio.zip")) {
+    } else if (binaryType == "WindowsStudio") {
         extractRoots = extractRootsDict.studio;
-        binaryType = "WindowsStudio";
     } else {
         log("[!] Error: Bad/unrecognized rbxPkgManifest, aborting..");
         return;
@@ -435,7 +422,7 @@ async function getManifestCallback(manifestBody) {
 
     zip = new JSZip();
     
-    // For both WindowsPlayer and WindowsStudio
+    // For both WindowsPlayer and WindowsStudio64
     zip.file("AppSettings.xml", `<?xml version="1.0" encoding="UTF-8"?>
 <Settings>
 	<ContentFolder>content</ContentFolder>

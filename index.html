@@ -27,6 +27,10 @@
         <style>
             @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
 
+            :root {
+                color-scheme: dark light;
+            }
+
             body {
                 font-family: 'JetBrains Mono', monospace;
             }
@@ -56,44 +60,35 @@
             input[type="button"] {
                 font-weight: normal;
             }
-
-            @media (prefers-color-scheme: dark) {
-                body {
-                    color: rgb(223, 230, 233);
-                    background-color: rgb(44, 51, 53);
-                }
-
-                form {
-                    border-color: rgb(149, 165, 166);
-                }
-            }
         </style>
     </head>
 
     <body>
-        <p>RDD - "Roblox Deployment Downloader" <a target="_blank" href="https://github.com/latte-soft/rdd">https://github.com/latte-soft/rdd</a><br />Copyright (c) 2023 Latte Softworks <a target="_blank" href="https://latte.to">&lt;latte.to&gt;</a> | <a target="_blank" href="https://rdd.latte.to/LICENSE.txt">GPLv3</a></a><br /></p>
-
+        <p>RDD - "Roblox Deployment Downloader" <a target="_blank" href="https://github.com/latte-soft/rdd">https://github.com/latte-soft/rdd</a><br />Copyright (c) 2023 Latte Softworks <a target="_blank" href="https://latte.to">&lt;latte.to&gt;</a> | <a target="_blank" href="https://rdd.latte.to/LICENSE.txt">GPLv3</a></p>
+        <br />
         <noscript>&#40;This site doesn't work without JavaScript Enabled!&#41;</noscript>
 
-        <form hidden id="downloadForm" target="_blank" action="">
-            <label for="binaryType">Binary Type:</label>
-            <select id="binaryType" name="binaryType">
-                <option value="WindowsPlayer">WindowsPlayer</option>
-                <option value="WindowsStudio64">WindowsStudio64</option>
-                <option value="MacPlayer">MacPlayer</option>
-                <option value="MacStudio">MacStudio</option>
-            </select>
-            <br />
-            <label for="channel">Channel Name:</label>
-            <input id="channel" name="channel" type="text" placeholder="LIVE" />
-            <br />
-            <label for="version">Version Hash:</label>
-            <input id="version" name="version" type="text"></input> <b>&#40;~ Not Required&#41;</b>
-            <br /><br />
-            <input type="button" onclick="downloadFromFormInfo();" value="Download" />
-            <input type="button" onclick="copyFormInfo();" value="Copy Permanent Link" />
-            <br />
-        </form>
+        <div hidden id="downloadFormDiv">
+            <form id="downloadForm" target="_blank" action="">
+                <label for="binaryType">Binary Type:</label>
+                <select id="binaryType" name="binaryType">
+                    <option value="WindowsPlayer">WindowsPlayer</option>
+                    <option value="WindowsStudio64">WindowsStudio64</option>
+                    <option value="MacPlayer">MacPlayer</option>
+                    <option value="MacStudio">MacStudio</option>
+                </select>
+                <br />
+                <label for="channel">Channel Name:</label>
+                <input id="channel" name="channel" type="text" placeholder="LIVE" />
+                <br />
+                <label for="version">Version Hash:</label>
+                <input id="version" name="version" type="text"></input> <b>&#40;~ Not Required&#41;</b>
+                <br /><br />
+                <input type="button" onclick="downloadFromFormInfo();" value="Download" />
+                <input type="button" onclick="copyFormInfo();" value="Copy Permanent Link" />
+                <br />
+            </form>
+        </div>
 
         <output id="consoleText"></output>
     </body>

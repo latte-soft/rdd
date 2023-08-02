@@ -34,10 +34,11 @@ RDD is a completely **static** website for locally downloading Roblox deployment
     present on certain channels
 
     Blob Directories (Examples):
-    * "/" (Default for WindowsPlayer/WindowsStudio)
+    * "/" (Default for WindowsPlayer/WindowsStudio64)
     * "/mac/" (Default for MacPlayer/MacStudio)
     * "/mac/arm64/"
     ..
+
 ```
 
 ### Usage Example - Permanent links for the *latest* deployment on the production channel ("`LIVE`")

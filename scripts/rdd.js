@@ -389,7 +389,7 @@ function fetchManifest() {
         const outputFileName = `${channel}-${binaryType}-${version}.zip`;
         log(`[+] (Please wait!) Downloading ${outputFileName}..`, "");
 
-        requestBinary(versionPath + outputFileName, function(zipData) {
+        requestBinary(versionPath + zipFileName, function(zipData) {
             log("done!");
             downloadBinaryFile(outputFileName, zipData);
         });

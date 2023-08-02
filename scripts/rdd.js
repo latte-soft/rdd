@@ -132,11 +132,11 @@ const binaryTypes = {
     },
     MacPlayer: {
         versionFile: "/mac/version",
-        blobDir: "/mac"
+        blobDir: "/mac/"
     },
     MacStudio: {
         versionFile: "/mac/versionStudio",
-        blobDir: "/mac"
+        blobDir: "/mac/"
     },
 }
 

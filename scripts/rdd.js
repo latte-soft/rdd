@@ -151,7 +151,7 @@ function getFormInfo() {
     let queryString = `?channel=${encodeURIComponent(channelName)}&binaryType=${encodeURIComponent(downloadForm.binaryType.value)}`;
 
     const versionHash = downloadForm.version.value.trim();
-    if (versionHash != "") {
+    if (versionHash !== "") {
         queryString += `&version=${encodeURIComponent(versionHash)}`;
     }
 
@@ -292,7 +292,7 @@ function main() {
     // "Internal"
     if (hostPath) {
         // If there's a "/" at the end, remove it
-        if (hostPath.slice(-1) == "/") {
+        if (hostPath.slice(-1) === "/") {
             hostPath = hostPath.slice(0, -1);
         }
     } else {
@@ -301,14 +301,14 @@ function main() {
 
     // Optional
     if (channel) {
-        if (channel != "LIVE") {
+        if (channel !== "LIVE") {
             channel = channel.toLowerCase();
         }
     } else {
         channel = "LIVE";
     }
 
-    if (channel == "LIVE") {
+    if (channel === "LIVE") {
         channelPath = `${hostPath}`;
     } else {
         channelPath = `${hostPath}/channel/${channel}`;
@@ -322,10 +322,10 @@ function main() {
     }
 
     if (blobDir) {
-        if (blobDir.slice(-1) != "/") {
+        if (blobDir.slice(-1) !== "/") {
             blobDir += "/"
         }
-        if (blobDir.slice(0) != "/") {
+        if (blobDir.slice(0) !== "/") {
             blobDir = "/" + blobDir;
         }
 
@@ -382,7 +382,7 @@ function main() {
 function fetchManifest() {
     versionPath = `${channelPath}${blobDir}${version}-`;
 
-    if (binaryType == "MacPlayer" || binaryType == "MacStudio") {
+    if (binaryType === "MacPlayer" || binaryType === "MacStudio") {
         const zipFileName = (binaryType == "MacPlayer" && "RobloxPlayer.zip") || (binaryType == "MacStudio" && "RobloxStudioApp.zip")
         log(`[+] Fetching zip archive for BinaryType "${binaryType}" (${zipFileName})`);
 
@@ -404,15 +404,25 @@ async function getManifestCallback(manifestBody) {
     log("done!");
     const pkgManifestLines = manifestBody.split("\n").map(line => line.trim());
 
-    if (pkgManifestLines[0] != "v0") {
+    if (pkgManifestLines[0] !== "v0") {
         log(`[!] Error: rbxPkgManifest manifest version incorrect; expected "v0", got "${pkgManifestLines[0]}"`);
         return
     }
 
-    if (binaryType == "WindowsPlayer") {
+    if (pkgManifestLines.includes("RobloxApp.zip")) {
         extractRoots = extractRootsDict.player;
-    } else if (binaryType == "WindowsStudio64") {
+
+        if (binaryType === "WindowsStudio64") {
+            log(`[!] Error: BinaryType \`${binaryType}\` given, but "RobloxApp.zip" was found in the manifest!`);
+            return;
+        }
+    } else if (pkgManifestLines.includes("RobloxStudio.zip")) {
         extractRoots = extractRootsDict.studio;
+
+        if (binaryType === "WindowsPlayer") {
+            log(`[!] Error: BinaryType \`${binaryType}\` given, but "RobloxStudio.zip" was found in the manifest!`);
+            return;
+        }
     } else {
         log("[!] Error: Bad/unrecognized rbxPkgManifest, aborting..");
         return;

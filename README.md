@@ -11,8 +11,6 @@ RDD is a completely **static** website for locally downloading Roblox deployment
 ## Usage
 
 ```txt
-[*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>
-    OR:
 [*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&version=<VERSION_HASH>
 
     Binary Types:
@@ -40,13 +38,6 @@ RDD is a completely **static** website for locally downloading Roblox deployment
     ..
 
 ```
-
-### Usage Example - Permanent links for the *latest* deployment on the production channel ("`LIVE`")
-
-* <https://rdd.latte.to/?binaryType=WindowsPlayer>
-* <https://rdd.latte.to/?binaryType=WindowsStudio64>
-* <https://rdd.latte.to/?binaryType=MacPlayer>
-* <https://rdd.latte.to/?binaryType=MacStudio>
 
 ### Extra Usage Examples
 

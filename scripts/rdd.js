@@ -18,9 +18,7 @@
 */
 
 const basePath = window.location.href.split("?")[0];
-const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>
-    OR:
-[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&version=<VERSION_HASH>
+const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&version=<VERSION_HASH>
 
     Binary Types:
     * WindowsPlayer
@@ -175,6 +173,17 @@ function scrollToBottom() {
     });
 };
 
+function escHtml(originalText) {
+    return originalText
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        .replace(/ /g, "&nbsp;")
+        .replace(/\n/g, "<br />");
+};
+
 function log(msg, end = "\n", autoScroll = true) {
     consoleText.append(msg + end);
     if (autoScroll) {
@@ -315,8 +324,8 @@ function main() {
     }
 
     // We're also checking to make sure blobDir hasn't been included too for the compatibility warning later
-    if (version && ! binaryType && ! blobDir) {
-        log("[!] Error: If you provide a specific `version`, you need to set the `binaryType` aswell! See the usage doc below for examples of various `binaryType` inputs:", "\n\n",);
+    if (version && ! binaryType) {
+        log("[!] Error: If you provide a specific `version`, you need to set the `binaryType` aswell! See the usage doc below for examples of various `binaryType` inputs:", "\n\n");
         log(usageMsg, "\n", false);
         return;
     }
@@ -369,13 +378,14 @@ function main() {
         // We're already good to go
         fetchManifest();
     } else {
-        log(`[+] Fetching version for ${binaryType}@${channel}.. `, "");
-        
-        request(versionFilePath, function(versionBody) {
-            log("done!");
-            version = versionBody;
-            fetchManifest();
-        });
+        log("[!] Error: Due to recent changes by Roblox's build-team (`version` files no longer being updated), we can no longer automatically fetch the latest version of a BinaryType on a channel. **You must now supply a version hash into the `version` query yourself, for now**", "\n\n");
+
+        const clientSettingsUrl = `https://clientsettings.roblox.com/v2/client-version/${escHtml(binaryType)}/channel/${escHtml(channel)}`;
+        log("Fetch version hash yourself here (we can't because of CORS): ", "");
+        consoleText.innerHTML += `<a target="_blank" href="${clientSettingsUrl}">${clientSettingsUrl}</a><br /><br />`;
+
+        log(usageMsg, "\n", false);
+        return;
     }
 };
 

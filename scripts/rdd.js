@@ -382,7 +382,7 @@ function main() {
 
         const clientSettingsUrl = `https://clientsettings.roblox.com/v2/client-version/${escHtml(binaryType)}/channel/${escHtml(channel)}`;
         log("Fetch version hash yourself here (we can't because of CORS): ", "");
-        consoleText.innerHTML += `<a target="_blank" href="${clientSettingsUrl}">${clientSettingsUrl}</a><br /><br />`;
+        consoleText.innerHTML += `<a target="_blank" href="${clientSettingsUrl}">${clientSettingsUrl}</a><br /><br /><br />`;
 
         log(usageMsg, "\n", false);
         return;

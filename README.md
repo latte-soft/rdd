@@ -39,16 +39,6 @@ RDD is a completely **static** website for locally downloading Roblox deployment
 
 ```
 
-### Extra Usage Examples
-
-<sup><i>Please don't use the specific-version bins listed here, they're soley for demonstrating some different uses of RDD!</i></sup>
-
-* <https://rdd.latte.to/?binaryType=WindowsPlayer&version=version-b9021bd8128442aa>
-* <https://rdd.latte.to/?channel=zintegration&binaryType=WindowsPlayer>
-* <https://rdd.latte.to/?channel=zintegration&binaryType=WindowsStudio64>
-* <https://rdd.latte.to/?channel=zintegration&binaryType=WindowsPlayer&version=version-a2ffc572ecd64e2b>
-* <https://rdd.latte.to/?channel=zintegration&binaryType=MacPlayer&version=version-14b4aedf5b9f427d>
-
 ## Extras
 
 * [JSZip (Used to power `WindowsPlayer`/`WindowsStudio` file extraction/generation, give it's repo a star!)](https://github.com/Stuk/jszip)

@@ -464,6 +464,8 @@ async function getManifestCallback(manifestBody) {
         const pkgManifestLine = pkgManifestLines[index];
         if (! pkgManifestLine.includes(".")) {
             continue; // Not a file in the manifest! (yes, this is quite a lazy way to check it lol)
+        } else if (! packageName.endsWith(".zip")) {
+            continue;
         }
 
         threadsLeft += 1;
@@ -497,13 +499,7 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
     requestBinary(blobUrl, async function(blobData) {
         log(`[+] Package "${packageName}" received!`);
 
-        if (! packageName.endsWith(".zip")) {
-            // We can skip extraction logic and just add the file directly to the root
-            zip.file(packageName, blobData);
-            log(`[+] Moved package "${packageName}" directly to the root folder`);
-            doneCallback();
-            return;
-        } else if (packageName in extractRoots == false) {
+        if (packageName in extractRoots == false) {
             log(`[*] Package name "${packageName}" not defined in extraction roots for BinaryType \`${binaryType}\`, skipping extraction! (THIS MAY MAKE THE ZIP OUTPUT INCOMPLETE, BE AWARE!)`);
             zip.file(packageName, blobData);
             log(`[+] Moved package "${packageName}" directly to the root folder`);

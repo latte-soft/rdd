@@ -47,7 +47,7 @@ RDD is a completely **static** website for locally downloading Roblox deployment
 
 ## License
 
-See [LICENSE.txt](LICENSE.txt)
+See [LICENSE](LICENSE)
 
 ```
 MIT License

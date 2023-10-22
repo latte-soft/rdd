@@ -378,13 +378,12 @@ function main() {
         // We're already good to go
         fetchManifest();
     } else {
-        log("[!] Error: Due to recent changes by Roblox's build-team (`version` files no longer being updated), we can no longer automatically fetch the latest version of a BinaryType on a channel. **You must now supply a version hash into the `version` query yourself, for now**", "\n\n");
-
         const clientSettingsUrl = `https://clientsettings.roblox.com/v2/client-version/${escHtml(binaryType)}/channel/${escHtml(channel)}`;
-        log("Fetch version hash yourself here (we can't because of CORS): ", "");
+        log("Copy the version hash (the area with \"version-xxxxxxxxxxxxxxxx\" in double-quotes) from the page in the link below (we can't because of CORS), and paste it in the field named \"Version Hash\" in the form above\n");
         consoleText.innerHTML += `<a target="_blank" href="${clientSettingsUrl}">${clientSettingsUrl}</a><br /><br /><br />`;
 
-        log(usageMsg, "\n", false);
+        downloadFormDiv.hidden = false;
+    
         return;
     }
 };

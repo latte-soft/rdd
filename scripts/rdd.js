@@ -464,7 +464,7 @@ async function getManifestCallback(manifestBody) {
         const pkgManifestLine = pkgManifestLines[index];
         if (! pkgManifestLine.includes(".")) {
             continue; // Not a file in the manifest! (yes, this is quite a lazy way to check it lol)
-        } else if (! packageName.endsWith(".zip")) {
+        } else if (! pkgManifestLine.endsWith(".zip")) {
             continue;
         }
 

@@ -168,8 +168,7 @@ function copyFormInfo() {
 
 function scrollToBottom() {
     window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth"
+        top: document.body.scrollHeight
     });
 };
 

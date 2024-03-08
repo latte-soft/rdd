@@ -1,7 +1,7 @@
 /*
     rdd - https://github.com/latte-soft/rdd
 
-    Copyright (C) 2023 Latte Softworks <latte.to>
+    Copyright (C) 2024 Latte Softworks <latte.to>
     MIT License - https://github.com/latte-soft/rdd/blob/master/LICENSE
 */
 

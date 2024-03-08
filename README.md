@@ -1,12 +1,13 @@
 # RDD - "Roblox Deployment Downloader"
 
-Static Site for Locally Downloading Complete Roblox Deployments (Windows/Mac, Player + Studio) Directly from Your Browser!
-<br />
+Static Website for Locally Downloading Windows/Mac Roblox Deployments (Player & Studio) Directly from Your Browser!
+
+
 Hosted officially @ <https://rdd.latte.to>
 
-## "Detailed" Explanation
+## Explanation
 
-RDD is a completely **static** website for locally downloading Roblox deployments; assembling plain resources directly from Roblox's `setup` S3 bucket, into a complete format the user would expect to be able to directly download and run directly, whatever it is. **Everything is fetched locally in your browser, without any required server resources!**
+RDD is a [**static** website](https://en.wikipedia.org/wiki/Static_web_page) for locally downloading Roblox deployments - RDD can assemble plain resources directly from Roblox's [`setup`](https://setup.rbxcdn.com) S3 storage bucket, into a complete format the user would expect to be able to directly download and extract/run. **Everything is fetched locally in your browser, without any required server resources!**
 
 ## Usage
 
@@ -41,7 +42,7 @@ RDD is a completely **static** website for locally downloading Roblox deployment
 
 ## Extras
 
-* [JSZip (Used to power `WindowsPlayer`/`WindowsStudio` file extraction/generation, give it's repo a star!)](https://github.com/Stuk/jszip)
+* [JSZip](https://github.com/Stuk/jszip) (Used to power `WindowsPlayer`/`WindowsStudio` file extraction/generation)
 * [Latte Softworks Discord Community](https://latte.to/discord)
 * <https://github.com/latte-soft/channel-tracker>
 
@@ -52,7 +53,7 @@ See [LICENSE](LICENSE)
 ```
 MIT License
 
-Copyright (c) 2023 Latte Softworks <https://latte.to>
+Copyright (c) 2024 Latte Softworks <https://latte.to>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -52,8 +52,9 @@
 
     <body>
         <p>RDD - "Roblox Deployment Downloader" &#40;<a target="_blank" href="https://github.com/latte-soft/rdd">GitHub Repository</a>&#41;<br>Copyright (c) 2024 Latte Softworks <a target="_blank" href="https://latte.to">&lt;latte.to&gt;</a> | <a target="_blank" href="https://github.com/latte-soft/rdd/blob/master/LICENSE">MIT License</a></p>
-        <noscript><br>&#40;This site doesn't work without JavaScript Enabled!&#41;<br></noscript>
+        <noscript><br>&#40;⚠️ This site doesn't work without JavaScript Enabled!&#41;<br></noscript>
 
+        <!-- Shown by rdd.js if there's no query args -->
         <div hidden id="downloadFormDiv">
             <form id="downloadForm" target="_blank" action="">
                 <label for="binaryType">Binary Type:</label>
@@ -70,8 +71,14 @@
                 <label for="version">Version Hash:</label>
                 <input id="version" name="version" type="text"> <b>&#40;Optional&#41;</b>
                 <br><br>
-                <button type="button" onclick="downloadFromFormInfo();">Download</button>
-                <button type="button" onclick="copyFormInfo();">Copy Permanent Link</button>
+                <label for="compressZip">Compress Output Zip:</label>
+                <input id="compressZip" name="compressZip" type="checkbox">
+                <br>
+                <label for="compressionLevel">Zip Compression Level (1-9):</label>
+                <input id="compressionLevel" name="compressionLevel" type="number" min="1" max="9" value="6">
+                <br><br>
+                <button type="button" onclick="downloadFromForm();">Download</button>
+                <button type="button" onclick="copyLinkFromForm();">Copy Permanent Link</button>
                 <br>
             </form>
             <br>

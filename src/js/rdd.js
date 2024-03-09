@@ -1,8 +1,7 @@
 /*
     rdd - https://github.com/latte-soft/rdd
 
-    Copyright (C) 2024 Latte Softworks <latte.to>
-    MIT License - https://github.com/latte-soft/rdd/blob/master/LICENSE
+    Copyright (C) 2024 Latte Softworks <latte.to> | MIT License
 */
 
 const basePath = window.location.href.split("?")[0];
@@ -132,7 +131,7 @@ const consoleText = document.getElementById("consoleText");
 const downloadForm = document.getElementById("downloadForm");
 const downloadFormDiv = document.getElementById("downloadFormDiv");
 
-function getFormInfo() {
+function getLinkFromForm() {
     const channelName = downloadForm.channel.value.trim() || downloadForm.channel.placeholder;
     let queryString = `?channel=${encodeURIComponent(channelName)}&binaryType=${encodeURIComponent(downloadForm.binaryType.value)}`;
 
@@ -141,17 +140,23 @@ function getFormInfo() {
         queryString += `&version=${encodeURIComponent(versionHash)}`;
     }
 
+    const compressZip = downloadForm.compressZip.value;
+    const compressionLevel = downloadForm.compressionLevel.value;
+    if (compressZip === "on") {
+        queryString += `&compressZip=true&compressionLevel=${compressionLevel}`;
+    }
+
     return basePath + queryString;
 };
 
 // Called upon the "Download" form button
-function downloadFromFormInfo() {
-    window.open(getFormInfo(), "_blank");
+function downloadFromForm() {
+    window.open(getLinkFromForm(), "_blank");
 };
 
 // Called upon the "Copy Permanent Link" form button
-function copyFormInfo() {
-    navigator.clipboard.writeText(getFormInfo());
+function copyLinkFromForm() {
+    navigator.clipboard.writeText(getLinkFromForm());
 };
 
 function scrollToBottom() {
@@ -168,7 +173,7 @@ function escHtml(originalText) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;")
         .replace(/ /g, "&nbsp;")
-        .replace(/\n/g, "<br />");
+        .replace(/\n/g, "<br>");
 };
 
 function log(msg, end = "\n", autoScroll = true) {
@@ -179,8 +184,8 @@ function log(msg, end = "\n", autoScroll = true) {
 };
 
 // Prompt download
-function downloadBinaryFile(fileName, data) {
-    const blob = new Blob([data], {type: "application/zip"});
+function downloadBinaryFile(fileName, data, mimeType = "application/zip") {
+    const blob = new Blob([data], { type: mimeType });
 
     let link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -188,12 +193,9 @@ function downloadBinaryFile(fileName, data) {
 
     let button = document.createElement("button");
     button.innerText = `Redownload ${fileName}`;
+    link.appendChild(button);
 
-    button.onclick = function() {
-        link.click();
-    };
-
-    document.body.appendChild(button);
+    document.body.appendChild(link);
     scrollToBottom();
 
     button.click();
@@ -217,7 +219,7 @@ function request(url, callback, errorOnNotOk = true) {
     };
 
     httpRequest.onerror = function(e) {
-        log(`[!] Request error @ ${url} - ${e}`);
+        log(`[!] Request error @ ${url}`);
     };
 
     httpRequest.send();
@@ -264,9 +266,12 @@ function getQuery(queryString) {
 
 let hostPath = getQuery("_hostPath");
 let channel = getQuery("channel");
-let version = getQuery("version");
+let version = getQuery("version") || getQuery("guid");
 let binaryType = getQuery("binaryType");
 let blobDir = getQuery("blobDir");
+
+let compressZip = getQuery("compressZip");
+let compressionLevel = getQuery("compressionLevel");
 
 let channelPath;
 let versionPath;
@@ -285,7 +290,8 @@ function main() {
         return;
     }
 
-    // "Internal"
+    // Internal
+
     if (hostPath) {
         // If there's a "/" at the end, remove it
         if (hostPath.slice(-1) === "/") {
@@ -296,6 +302,7 @@ function main() {
     }
 
     // Optional
+
     if (channel) {
         if (channel !== "LIVE") {
             channel = channel.toLowerCase();
@@ -308,7 +315,8 @@ function main() {
         channelPath = `${hostPath}`;
     } else {
         channelPath = `${hostPath}/channel/${channel}`;
-    }
+    }    // Internal
+
 
     // We're also checking to make sure blobDir hasn't been included too for the compatibility warning later
     if (version && ! binaryType) {
@@ -318,11 +326,11 @@ function main() {
     }
 
     if (blobDir) {
-        if (blobDir.slice(-1) !== "/") {
-            blobDir += "/"
-        }
         if (blobDir.slice(0) !== "/") {
             blobDir = "/" + blobDir;
+        }
+        if (blobDir.slice(-1) !== "/") {
+            blobDir += "/"
         }
 
         // We used to support usage of ONLY `blobDir` & `version` in the past, requiring us
@@ -338,9 +346,37 @@ function main() {
         }
     }
 
+    if (compressZip) {
+        if (compressZip !== "true" && compressZip !== "false") {
+            log(`[!] Error: The \`compressZip\` query must be a boolean ("true" or "false"), got "${compressZip}"`);
+        }
+
+        compressZip = (compressZip === "true");
+    } else {
+        compressZip = false;
+    }
+
+    if (compressionLevel) {
+        try {
+            compressionLevel = parseInt(compressionLevel);
+        } catch (err) {
+            log(`[!] Error: Failed to parse \`compressionLevel\` query: ${error}`, "\n\n");
+            log(usageMsg, "\n", false);
+            return;
+        }
+
+        if (compressionLevel > 9 || compressionLevel < 1) {
+            log(`[!] Error: The \`compressionLevel\` query must be a value between 1 and 9, got ${compressionLevel}`, "\n\n");
+            log(usageMsg, "\n", false);
+            return;
+        }
+    } else {
+        compressionLevel = 6; // Only applies to when `compressZip` is true aswell
+    }
+
     // At this point, we expect `binaryType` to be defined if all is well on input from the user..
     if (! binaryType) {
-        // Again, we used to support specific-versions without denoting binaryType explicitly
+        // Again, we used to support specific versions without denoting binaryType explicitly
         log("[!] Error: Missing required \`binaryType\` query, are you using an old perm link for a specific version?", "\n\n");
         log(usageMsg, "\n", false);
         return;
@@ -370,7 +406,7 @@ function main() {
 
         const clientSettingsUrl = `https://clientsettings.roblox.com/v2/client-version/${binaryTypeEncoded}/channel/${channelNameEncoded}`;
         log("Copy the version hash (the area with \"version-xxxxxxxxxxxxxxxx\" in double-quotes) from the page in the link below (we can't because of CORS), and paste it in the field named \"Version Hash\" in the form above\n");
-        consoleText.innerHTML += `<a target="_blank" href="${clientSettingsUrl}">${clientSettingsUrl}</a><br /><br /><br />`;
+        consoleText.innerHTML += `<a target="_blank" href="${clientSettingsUrl}">${clientSettingsUrl}</a><br><br><br>`;
 
         downloadForm.channel.value = channelNameEncoded;
         downloadForm.binaryType.value = binaryTypeEncoded;
@@ -397,12 +433,14 @@ function fetchManifest() {
     } else {
         // Now, we're only dealing with Windows bin logic
         log(`[+] Fetching rbxPkgManifest for ${version}@${channel}.. `, "");
-        request(versionPath + "rbxPkgManifest.txt", getManifestCallback);
+        request(versionPath + "rbxPkgManifest.txt", function(manifestBody) {
+            log("done!");
+            downloadZipsFromManifest(manifestBody);
+        });
     }
 };
 
-async function getManifestCallback(manifestBody) {
-    log("done!");
+async function downloadZipsFromManifest(manifestBody) {
     const pkgManifestLines = manifestBody.split("\n").map(line => line.trim());
 
     if (pkgManifestLines[0] !== "v0") {
@@ -473,7 +511,13 @@ async function getManifestCallback(manifestBody) {
         const outputFileName = `${channel}-${binaryType}-${version}.zip`;
         log(`[+] Exporting assembled zip file "${outputFileName}".. `, "");
 
-        zip.generateAsync({type: "arraybuffer"}).then(function(outputZipData) {
+        zip.generateAsync({
+            type: "arraybuffer",
+            compression: compressZip ? "DEFLATE" : "STORE",
+            compressionOptions: {
+                level: compressionLevel
+            }
+        }).then(function(outputZipData) {
             zip = null;
             log("done!");
             downloadBinaryFile(outputFileName, outputZipData);
@@ -484,7 +528,7 @@ async function getManifestCallback(manifestBody) {
 };
 
 async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
-    log(`[+] Fetching "${packageName}"..`,);
+    log(`[+] Fetching "${packageName}"..`);
     const blobUrl = versionPath + packageName;
 
     requestBinary(blobUrl, async function(blobData) {

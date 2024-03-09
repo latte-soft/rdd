@@ -5,7 +5,7 @@ Static Website for Locally Downloading Windows/Mac Roblox Deployments (Player & 
 
 Hosted officially @ <https://rdd.latte.to>
 
-## Explanation
+## What is this?
 
 RDD is a [**static** website](https://en.wikipedia.org/wiki/Static_web_page) for locally downloading Roblox deployments - RDD can assemble plain resources directly from Roblox's [`setup`](https://setup.rbxcdn.com) S3 storage bucket, into a complete format the user would expect to be able to directly download and extract/run. **Everything is fetched locally in your browser, without any required server resources!**
 
@@ -48,7 +48,7 @@ RDD is a [**static** website](https://en.wikipedia.org/wiki/Static_web_page) for
 
 ## License
 
-See [LICENSE](LICENSE)
+See file: [LICENSE](LICENSE)
 
 ```
 MIT License

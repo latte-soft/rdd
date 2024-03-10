@@ -176,7 +176,7 @@ function escHtml(originalText) {
         .replace(/\n/g, "<br>");
 };
 
-function log(msg, end = "\n", autoScroll = true) {
+function log(msg = "", end = "\n", autoScroll = true) {
     consoleText.append(msg + end);
     if (autoScroll) {
         scrollToBottom();
@@ -353,7 +353,7 @@ function main() {
 
         compressZip = (compressZip === "true");
     } else {
-        compressZip = false;
+        compressZip = downloadForm.compressZip.checked;
     }
 
     if (compressionLevel) {
@@ -371,7 +371,7 @@ function main() {
             return;
         }
     } else {
-        compressionLevel = 6; // Only applies to when `compressZip` is true aswell
+        compressionLevel = downloadForm.compressionLevel.value; // Only applies to when `compressZip` is true aswell
     }
 
     // At this point, we expect `binaryType` to be defined if all is well on input from the user..
@@ -408,8 +408,12 @@ function main() {
         log("Copy the version hash (the area with \"version-xxxxxxxxxxxxxxxx\" in double-quotes) from the page in the link below (we can't because of CORS), and paste it in the field named \"Version Hash\" in the form above\n");
         consoleText.innerHTML += `<a target="_blank" href="${clientSettingsUrl}">${clientSettingsUrl}</a><br><br><br>`;
 
+        // Same options as may have been input from the page before
         downloadForm.channel.value = channelNameEncoded;
         downloadForm.binaryType.value = binaryTypeEncoded;
+        downloadForm.compressZip.checked = compressZip;
+        downloadForm.compressionLevel.value = compressionLevel;
+
         downloadFormDiv.hidden = false;
     
         return;
@@ -509,6 +513,11 @@ async function downloadZipsFromManifest(manifestBody) {
 
         // Now, we can export and download the complete zip
         const outputFileName = `${channel}-${binaryType}-${version}.zip`;
+        log();
+        if (compressZip) {
+            log(`[!] NOTE: Compressing final zip (with a compression level of ${compressionLevel}/9), this may take a bit longer than with no compression..`);
+        }
+
         log(`[+] Exporting assembled zip file "${outputFileName}".. `, "");
 
         zip.generateAsync({
@@ -532,7 +541,7 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
     const blobUrl = versionPath + packageName;
 
     requestBinary(blobUrl, async function(blobData) {
-        log(`[+] Package "${packageName}" received!`);
+        log(`[+] Received package "${packageName}"!`);
 
         if (packageName in extractRoots == false) {
             log(`[*] Package name "${packageName}" not defined in extraction roots for BinaryType \`${binaryType}\`, skipping extraction! (THIS MAY MAKE THE ZIP OUTPUT INCOMPLETE, BE AWARE!)`);

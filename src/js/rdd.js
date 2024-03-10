@@ -140,9 +140,9 @@ function getLinkFromForm() {
         queryString += `&version=${encodeURIComponent(versionHash)}`;
     }
 
-    const compressZip = downloadForm.compressZip.value;
+    const compressZip = downloadForm.compressZip.checked;
     const compressionLevel = downloadForm.compressionLevel.value;
-    if (compressZip === "on") {
+    if (compressZip === true) {
         queryString += `&compressZip=true&compressionLevel=${compressionLevel}`;
     }
 

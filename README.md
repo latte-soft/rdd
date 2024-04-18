@@ -36,7 +36,7 @@ RDD is a [**static** website](https://en.wikipedia.org/wiki/Static_web_page) for
     * "/" (Default for WindowsPlayer/WindowsStudio64)
     * "/mac/" (Default for MacPlayer/MacStudio)
     * "/mac/arm64/"
-    ..
+    ...
 
 ```
 

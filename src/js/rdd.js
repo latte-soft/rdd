@@ -29,7 +29,7 @@ const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINA
     * "/" (Default for WindowsPlayer/WindowsStudio64)
     * "/mac/" (Default for MacPlayer/MacStudio)
     * "/mac/arm64/"
-    ..
+    ...
 `;
 
 // Root extract locations for different known zips possible in the Win manifests
@@ -428,7 +428,7 @@ function fetchManifest() {
         log(`[+] Fetching zip archive for BinaryType "${binaryType}" (${zipFileName})`);
 
         const outputFileName = `${channel}-${binaryType}-${version}.zip`;
-        log(`[+] (Please wait!) Downloading ${outputFileName}..`, "");
+        log(`[+] (Please wait!) Downloading ${outputFileName}...`, "");
 
         requestBinary(versionPath + zipFileName, function(zipData) {
             log("done!");
@@ -436,7 +436,7 @@ function fetchManifest() {
         });
     } else {
         // Now, we're only dealing with Windows bin logic
-        log(`[+] Fetching rbxPkgManifest for ${version}@${channel}.. `, "");
+        log(`[+] Fetching rbxPkgManifest for ${version}@${channel}...`, "");
         request(versionPath + "rbxPkgManifest.txt", function(manifestBody) {
             log("done!");
             downloadZipsFromManifest(manifestBody);
@@ -467,11 +467,11 @@ async function downloadZipsFromManifest(manifestBody) {
             return;
         }
     } else {
-        log("[!] Error: Bad/unrecognized rbxPkgManifest, aborting..");
+        log("[!] Error: Bad/unrecognized rbxPkgManifest, aborting...");
         return;
     }
 
-    log(`[+] Fetching blobs for BinaryType \`${binaryType}\`..`);
+    log(`[+] Fetching blobs for BinaryType \`${binaryType}\`...`);
 
     zip = new JSZip();
     
@@ -515,10 +515,10 @@ async function downloadZipsFromManifest(manifestBody) {
         const outputFileName = `${channel}-${binaryType}-${version}.zip`;
         log();
         if (compressZip) {
-            log(`[!] NOTE: Compressing final zip (with a compression level of ${compressionLevel}/9), this may take a bit longer than with no compression..`);
+            log(`[!] NOTE: Compressing final zip (with a compression level of ${compressionLevel}/9), this may take a bit longer than with no compression...`);
         }
 
-        log(`[+] Exporting assembled zip file "${outputFileName}".. `, "");
+        log(`[+] Exporting assembled zip file "${outputFileName}"...`, "");
 
         zip.generateAsync({
             type: "arraybuffer",
@@ -537,7 +537,7 @@ async function downloadZipsFromManifest(manifestBody) {
 };
 
 async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
-    log(`[+] Fetching "${packageName}"..`);
+    log(`[+] Fetching "${packageName}"...`);
     const blobUrl = versionPath + packageName;
 
     requestBinary(blobUrl, async function(blobData) {
@@ -551,7 +551,7 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
             return;
         }
 
-        log(`[+] Extracting "${packageName}"..`);
+        log(`[+] Extracting "${packageName}"...`);
         const extractRootFolder = extractRoots[packageName];
 
         await JSZip.loadAsync(blobData).then(async function(packageZip) {

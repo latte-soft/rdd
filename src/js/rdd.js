@@ -317,6 +317,13 @@ function main() {
         channelPath = `${hostPath}/channel/${channel}`;
     }    // Internal
 
+    if (version) {
+        version = version.toLowerCase();
+        if (! version.startsWith("version-")) { // Only the version GUID is actually necessary
+            version = "version-" + version
+        }
+    }
+
 
     // We're also checking to make sure blobDir hasn't been included too for the compatibility warning later
     if (version && ! binaryType) {

@@ -1,15 +1,21 @@
-# RDD - "Roblox Deployment Downloader"
+[commits]: https://github.com/latte-soft/rdd/commits
+[discord]: https://latte.to/discord
+[badges/last-modified]: https://img.shields.io/github/last-commit/latte-soft/rdd?label=Last%20Modifed
+[badges/discord]: https://img.shields.io/discord/892211155303538748?label=Latte%20Softworks%20Discord&color=5865F2
 
-Static Website for Locally Downloading Windows/Mac Roblox Deployments (Player & Studio) Directly from Your Browser!
+## RDD ("Roblox Deployment Downloader")
 
+[![Last Modified][badges/last-modified]][commits] [![Discord Server][badges/discord]][discord]
+
+Locally download Roblox deployments (Windows/Mac) directly from your browser!
 
 Hosted officially @ <https://rdd.latte.to>
 
-## What is this?
+### What is this?
 
-RDD is a [**static** website](https://en.wikipedia.org/wiki/Static_web_page) for locally downloading Roblox deployments - RDD can assemble plain resources directly from Roblox's [`setup`](https://setup.rbxcdn.com) S3 storage bucket, into a complete format the user would expect to be able to directly download and extract/run. **Everything is fetched locally in your browser, without any required server resources!**
+RDD can assemble plain resources directly from Roblox's [`setup`](https://setup.rbxcdn.com) S3 storage bucket into a format the user would expect to be able to directly extract/run from. **Everything is fetched locally in your browser, without any additional required server resources!**
 
-## Usage
+### Usage
 
 ```txt
 [*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&version=<VERSION_HASH>
@@ -40,10 +46,9 @@ RDD is a [**static** website](https://en.wikipedia.org/wiki/Static_web_page) for
 
 ```
 
-## Extras
+### Extras
 
-* [JSZip](https://github.com/Stuk/jszip) (Used to power `WindowsPlayer`/`WindowsStudio` file extraction/generation)
-* [Latte Softworks Discord Community](https://latte.to/discord)
+* [JSZip](https://github.com/Stuk/jszip) (Used for `WindowsPlayer`/`WindowsStudio` file extraction/generation)
 * <https://github.com/latte-soft/channel-tracker>
 
 ## License

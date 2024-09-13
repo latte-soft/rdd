@@ -32,8 +32,10 @@ const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINA
     ..
 `;
 
-// Root extract locations for different known zips possible in the Win manifests
-const extractRootsDict = {
+const hostPath = "https://setup-cfly.rbxcdn.com"; // Only the cachefly mirror has proper CORS cfg
+
+// Root extract locations for the Win manifests
+const extractRoots = {
     player: {
         "RobloxApp.zip": "",
         "shaders.zip": "shaders/",
@@ -264,7 +266,6 @@ function getQuery(queryString) {
     return urlParams.get(queryString) || null;
 };
 
-let hostPath = getQuery("_hostPath");
 let channel = getQuery("channel");
 let version = getQuery("version") || getQuery("guid");
 let binaryType = getQuery("binaryType");
@@ -276,7 +277,7 @@ let compressionLevel = getQuery("compressionLevel");
 let channelPath;
 let versionPath;
 
-let extractRoots;
+let binExtractRoots;
 let zip;
 
 // Init
@@ -290,18 +291,7 @@ function main() {
         return;
     }
 
-    // Internal
-
-    if (hostPath) {
-        // If there's a "/" at the end, remove it
-        if (hostPath.slice(-1) === "/") {
-            hostPath = hostPath.slice(0, -1);
-        }
-    } else {
-        hostPath = "https://roblox-setup.cachefly.net"; // setup.rbxcdn.com doesn't have the proper CORS cfg
-    }
-
-    // Optional
+    // Query params
 
     if (channel) {
         if (channel !== "LIVE") {
@@ -315,7 +305,7 @@ function main() {
         channelPath = `${hostPath}`;
     } else {
         channelPath = `${hostPath}/channel/${channel}`;
-    }    // Internal
+    }
 
     if (version) {
         version = version.toLowerCase();
@@ -460,14 +450,14 @@ async function downloadZipsFromManifest(manifestBody) {
     }
 
     if (pkgManifestLines.includes("RobloxApp.zip")) {
-        extractRoots = extractRootsDict.player;
+        binExtractRoots = extractRoots.player;
 
         if (binaryType === "WindowsStudio64") {
             log(`[!] Error: BinaryType \`${binaryType}\` given, but "RobloxApp.zip" was found in the manifest!`);
             return;
         }
     } else if (pkgManifestLines.includes("RobloxStudio.zip")) {
-        extractRoots = extractRootsDict.studio;
+        binExtractRoots = extractRoots.studio;
 
         if (binaryType === "WindowsPlayer") {
             log(`[!] Error: BinaryType \`${binaryType}\` given, but "RobloxStudio.zip" was found in the manifest!`);
@@ -550,7 +540,7 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
     requestBinary(blobUrl, async function(blobData) {
         log(`[+] Received package "${packageName}"!`);
 
-        if (packageName in extractRoots == false) {
+        if (packageName in binExtractRoots == false) {
             log(`[*] Package name "${packageName}" not defined in extraction roots for BinaryType \`${binaryType}\`, skipping extraction! (THIS MAY MAKE THE ZIP OUTPUT INCOMPLETE, BE AWARE!)`);
             zip.file(packageName, blobData);
             log(`[+] Moved package "${packageName}" directly to the root folder`);
@@ -559,7 +549,7 @@ async function downloadPackage(packageName, doneCallback, getThreadsLeft) {
         }
 
         log(`[+] Extracting "${packageName}"..`);
-        const extractRootFolder = extractRoots[packageName];
+        const extractRootFolder = binExtractRoots[packageName];
 
         await JSZip.loadAsync(blobData).then(async function(packageZip) {
             blobData = null;

@@ -1,0 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap");
+
+:root {
+  color-scheme: dark light;
+}
+
+body {
+  font-family: "JetBrains Mono", monospace;
+}
+
+form {
+  border-width: thin;
+  border-style: solid;
+  border-radius: 4px;
+  margin-left: 10px;
+  width: fit-content;
+  padding: 18px 18px 18px 18px;
+  line-height: 24px;
+}
+
+output {
+  white-space: pre-wrap;
+}
+
+button {
+  font-weight: normal;
+}
+
+a:link {
+  color: rgb(43, 162, 241);
+  font-weight: bolder;
+}
+
+a:visited {
+  color: rgb(43, 162, 241);
+  font-weight: bolder;
+}

@@ -14,7 +14,7 @@ const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINA
     * MacStudio
     
     Extra Notes:
-    * If \`channel\` isn't provided, it will default to "LIVE" (psuedo identifier for
+    * If \`channel\` isn't provided, it will default to "LIVE" (pseudo identifier for
       the production channel)
     * You can provide \`binaryType\` to fetch the *latest* deployment on a channel, or
       BOTH \`binaryType\` and \`version\` to fetch a specific deployment of a specific

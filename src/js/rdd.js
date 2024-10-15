@@ -38,6 +38,7 @@ const hostPath = "https://setup-cfly.rbxcdn.com"; // Only the cachefly mirror ha
 const extractRoots = {
     player: {
         "RobloxApp.zip": "",
+        "redist.zip": "",
         "shaders.zip": "shaders/",
         "ssl.zip": "ssl/",
 

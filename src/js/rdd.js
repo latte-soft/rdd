@@ -53,9 +53,10 @@ const extractRoots = {
         "content-textures2.zip": "content/textures/",
         "content-models.zip": "content/models/",
 
-        "content-textures3.zip": "PlatformContent/pc/textures/",
-        "content-terrain.zip": "PlatformContent/pc/terrain/",
         "content-platform-fonts.zip": "PlatformContent/pc/fonts/",
+        "content-platform-dictionaries.zip": "PlatformContent/pc/shared_compression_dictionaries/",
+        "content-terrain.zip": "PlatformContent/pc/terrain/",
+        "content-textures3.zip": "PlatformContent/pc/textures/",
 
         "extracontent-luapackages.zip": "ExtraContent/LuaPackages/",
         "extracontent-translations.zip": "ExtraContent/translations/",
@@ -95,6 +96,7 @@ const extractRoots = {
         "content-studio_svg_textures.zip": "content/studio_svg_textures/",
 
         "content-platform-fonts.zip": "PlatformContent/pc/fonts/",
+        "content-platform-dictionaries.zip": "PlatformContent/pc/shared_compression_dictionaries/",
         "content-terrain.zip": "PlatformContent/pc/terrain/",
         "content-textures3.zip": "PlatformContent/pc/textures/",
 

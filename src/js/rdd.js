@@ -67,6 +67,7 @@ const extractRoots = {
 
     studio: {
         "RobloxStudio.zip": "",
+        "RibbonConfig.zip": "RibbonConfig/",
         "redist.zip": "",
         "Libraries.zip": "",
         "LibrariesQt5.zip": "",

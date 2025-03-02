@@ -1,7 +1,7 @@
 /*
     rdd - https://github.com/latte-soft/rdd
 
-    Copyright (C) 2024 Latte Softworks <latte.to> | MIT License
+    Copyright (C) 2024-2025 Latte Softworks <latte.to> | MIT License
 */
 
 const basePath = window.location.href.split("?")[0];

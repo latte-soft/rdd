@@ -58,7 +58,7 @@ See file: [LICENSE](LICENSE)
 ```
 MIT License
 
-Copyright (c) 2024 Latte Softworks <https://latte.to>
+Copyright (c) 2024-2025 Latte Softworks <https://latte.to>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

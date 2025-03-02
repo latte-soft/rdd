@@ -1,11 +1,9 @@
 [commits]: https://github.com/latte-soft/rdd/commits
-[discord]: https://latte.to/discord
 [badges/last-modified]: https://img.shields.io/github/last-commit/latte-soft/rdd?label=Last%20Modifed
-[badges/discord]: https://discord.com/api/v10/guilds/892211155303538748/widget.png?style=shield
 
 ## RDD ("Roblox Deployment Downloader")
 
-[![Last Modified][badges/last-modified]][commits] [![Discord Server][badges/discord]][discord]
+[![Last Modified][badges/last-modified]][commits]
 
 Locally download Roblox deployments (Windows/Mac) directly from your browser!
 

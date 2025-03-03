@@ -357,7 +357,7 @@ function main() {
         compressZip = downloadForm.compressZip.checked;
     }
 
-    if (compressionLevel) {
+    if (compressionLevel !== "") {
         try {
             compressionLevel = parseInt(compressionLevel);
         } catch (err) {
@@ -421,7 +421,7 @@ function main() {
     }
 };
 
-function fetchManifest() {
+async function fetchManifest() {
     versionPath = `${channelPath}${blobDir}${version}-`;
 
     if (binaryType === "MacPlayer" || binaryType === "MacStudio") {
@@ -437,11 +437,28 @@ function fetchManifest() {
         });
     } else {
         // Now, we're only dealing with Windows bin logic
-        log(`[+] Fetching rbxPkgManifest for ${version}@${channel}.. `, "");
-        request(versionPath + "rbxPkgManifest.txt", function(manifestBody) {
-            log("done!");
-            downloadZipsFromManifest(manifestBody);
-        });
+        log(`[+] Fetching rbxPkgManifest for ${version}@${channel}..`);
+
+        // TODO: This is terrible, just a temp fix so we don't get 5 billion issue reports for not supporting /channel/common/
+        var manifestBody = ""
+        {
+            var resp = await fetch(versionPath + "rbxPkgManifest.txt")
+            if (! resp.ok) {
+                channelPath = `${hostPath}/channel/common`
+                versionPath = `${channelPath}${blobDir}${version}-`;
+
+                resp = await fetch(versionPath + "rbxPkgManifest.txt")
+            }
+
+            if (! resp.ok) {
+                log(`[!] Failed to fetch rbxPkgManifest: (status: ${resp.status}, err: ${(await resp.text()) || "<failed to get response from server>"})`)
+                return
+            }
+
+            manifestBody = await resp.text()
+        }
+
+        downloadZipsFromManifest(manifestBody);
     }
 };
 
@@ -449,7 +466,7 @@ async function downloadZipsFromManifest(manifestBody) {
     const pkgManifestLines = manifestBody.split("\n").map(line => line.trim());
 
     if (pkgManifestLines[0] !== "v0") {
-        log(`[!] Error: rbxPkgManifest manifest version incorrect; expected "v0", got "${pkgManifestLines[0]}"`);
+        log(`[!] Error: unknown rbxPkgManifest format version; expected "v0", got "${pkgManifestLines[0]}"`);
         return
     }
 

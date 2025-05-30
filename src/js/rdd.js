@@ -12,7 +12,7 @@ const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINA
     * WindowsStudio64
     * MacPlayer
     * MacStudio
-    
+
     Extra Notes:
     * If \`channel\` isn't provided, it will default to "LIVE" (pseudo identifier for
       the production channel)
@@ -32,7 +32,7 @@ const usageMsg = `[*] USAGE: ${basePath}?channel=<CHANNEL_NAME>&binaryType=<BINA
     ..
 `;
 
-const hostPath = "https://setup-cfly.rbxcdn.com"; // Only the cachefly mirror has proper CORS cfg
+const hostPath = "https://setup-aws.rbxcdn.com"; // Only the AWS mirror has proper CORS cfg
 
 // Root extract locations for the Win manifests
 const extractRoots = {
@@ -416,7 +416,7 @@ function main() {
         downloadForm.compressionLevel.value = compressionLevel;
 
         downloadFormDiv.hidden = false;
-    
+
         return;
     }
 };
@@ -492,7 +492,7 @@ async function downloadZipsFromManifest(manifestBody) {
     log(`[+] Fetching blobs for BinaryType \`${binaryType}\`..`);
 
     zip = new JSZip();
-    
+
     // For both WindowsPlayer and WindowsStudio64
     zip.file("AppSettings.xml", `<?xml version="1.0" encoding="UTF-8"?>
 <Settings>

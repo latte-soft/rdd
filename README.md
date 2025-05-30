@@ -2,7 +2,7 @@
 [badges/last-modified]: https://img.shields.io/github/last-commit/latte-soft/rdd?label=Last%20Modifed
 
 > [!CAUTION]
-> The only *official* host of RDD is [**`rdd.[latte.to]`**](https://rdd.latte.to). Under no circumstances is Latte Softworks responsible for any potential harm caused by using an unofficial fork/rehost of RDD, though anyone is free to fork off of or rehost RDD as it is under the MIT license. RDD is a static website with none of its own backend infrastructure, binaries are fetched directly from Roblox's official content delivery network via [**`setup-cfly.[rbxcdn.com]`**](https://setup-cfly.rbxcdn.com).
+> The only *official* host of RDD is [**`rdd.[latte.to]`**](https://rdd.latte.to). Under no circumstances is Latte Softworks responsible for any potential harm caused by using an unofficial fork/rehost of RDD, though anyone is free to fork off of or rehost RDD as it is under the MIT license. RDD is a static website with none of its own backend infrastructure, binaries are fetched directly from Roblox's official content delivery network via [**`setup-aws.[rbxcdn.com]`**](https://setup-aws.rbxcdn.com).
 
 ## RDD ("Roblox Deployment Downloader")
 
@@ -26,7 +26,7 @@ RDD can assemble plain resources directly from Roblox's [`setup`](https://setup.
     * WindowsStudio64
     * MacPlayer
     * MacStudio
-    
+
     Extra Notes:
     * If `channel` isn't provided, it will default to "LIVE" (pseudo identifier for
       the production channel)

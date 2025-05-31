@@ -19,6 +19,7 @@ RDD can assemble plain resources directly from Roblox's [`setup`](https://setup.
 ### Usage
 
 ```txt
+
 [*] USAGE: https://rdd.latte.to/?channel=<CHANNEL_NAME>&binaryType=<BINARY_TYPE>&version=<VERSION_HASH>
 
     Binary Types:
@@ -28,23 +29,18 @@ RDD can assemble plain resources directly from Roblox's [`setup`](https://setup.
     * MacStudio
 
     Extra Notes:
-    * If `channel` isn't provided, it will default to "LIVE" (pseudo identifier for
-      the production channel)
-    * You can provide `binaryType` to fetch the *latest* deployment on a channel, or
-      BOTH `binaryType` and `version` to fetch a specific deployment of a specific
-      binary type; for a specific `version`, you NEED to provide `binaryType` aswell
+    * If `channel` isn't provided, it will default to "LIVE" (the production channel)
 
-    You can also use an extra flag we provide, `blobDir`, for specifying where RDD
-    should fetch deployment files/binaries from. This is ONLY useful for using
-    different relative paths than normal, such as "/mac/arm64" which is specifically
-    present on certain channels
+    You can also use an extra query argument we provide, `blobDir`, for specifying
+    where RDD should fetch deployment files from. This is useful for using different
+    relative directories than normal for a certain client type, such as for fetching
+    stuff from /mac/arm64/ instead of /mac/
 
     Blob Directories (Examples):
     * "/" (Default for WindowsPlayer/WindowsStudio64)
     * "/mac/" (Default for MacPlayer/MacStudio)
     * "/mac/arm64/"
     ..
-
 ```
 
 ### Extras

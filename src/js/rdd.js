@@ -290,7 +290,7 @@ function main() {
         return;
     }
 
-    if (blobDir !== null & blobDir !== "") {
+    if (blobDir !== null && blobDir !== "") {
         if (blobDir.slice(0) !== "/") {
             blobDir = "/" + blobDir;
         }
@@ -355,7 +355,7 @@ function main() {
 
         const clientSettingsUrl = `https://clientsettings.roblox.com/v2/client-version/${binaryTypeEncoded}/channel/${channelNameEncoded}`;
         log("Copy the version hash (the area with \"version-xxxxxxxxxxxxxxxx\" in double-quotes) from the page in the link below (we can't because of CORS), and paste it in the field named \"Version Hash\" in the form above\n");
-        consoleText.innerHTML += `<a target="_target" href="${clientSettingsUrl}">${clientSettingsUrl}</a><br><br><br>`;
+        consoleText.innerHTML += `<a target="_blank" href="${clientSettingsUrl}">${clientSettingsUrl}</a><br><br><br>`;
 
         // Same options as may have been input from the page before
         downloadForm.channel.value = channelNameEncoded;

@@ -101,7 +101,10 @@ const extractRoots = {
         "extracontent-luapackages.zip": "ExtraContent/LuaPackages/",
         "extracontent-textures.zip": "ExtraContent/textures/",
         "extracontent-scripts.zip": "ExtraContent/scripts/",
-        "extracontent-models.zip": "ExtraContent/models/"
+        "extracontent-models.zip": "ExtraContent/models/",
+
+        "studiocontent-models.zip": "StudioContent/models/",
+        "studiocontent-textures.zip": "StudioContent/textures/"
     }
 };
 
